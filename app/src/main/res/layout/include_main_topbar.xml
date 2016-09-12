@@ -27,7 +27,7 @@
             android:textColor="@color/black"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
-            android:textSize="@dimen/text_size_twenty" />
+            android:textSize="20sp" />
         <ImageView
             android:id="@+id/top_bar_right_img"
             android:layout_width="wrap_content"
@@ -52,6 +52,6 @@
             android:visibility="gone"
             android:onClick="onClick"
             android:clickable="true"
-            android:textSize="@dimen/text_size_sixteen" />
+            android:textSize="16sp" />
     </RelativeLayout>
 </LinearLayout>

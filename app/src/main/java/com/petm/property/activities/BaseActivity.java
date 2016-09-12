@@ -14,6 +14,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.petm.property.R;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 
@@ -143,13 +144,13 @@ public abstract class BaseActivity extends FragmentActivity {
 
     }
 
-//    public void initAnimation(){
-//        load_loading = findViewById(R.id.load_loading);
-//        loadingImageView.setBackgroundResource(R.drawable.loading);
-//        animation = (AnimationDrawable) loadingImageView.getBackground();
-//        animation.setOneShot(false);
-//        startAnimation();
-//    }
+    public void initAnimation(){
+        load_loading = findViewById(R.id.load_loading);
+        loadingImageView.setBackgroundResource(R.drawable.loading);
+        animation = (AnimationDrawable) loadingImageView.getBackground();
+        animation.setOneShot(false);
+        startAnimation();
+    }
 
     public void startAnimation() {
         if (loading.getVisibility() == View.GONE){

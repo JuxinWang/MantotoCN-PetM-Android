@@ -26,7 +26,7 @@ public class ByteArrayRequest extends Request<byte[]> {
     private Object mPostBody = null;
     private HttpEntity httpEntity = null;
 
-    public ByteArrayRequest(int method,String url,Object postBody,Response.Listener<byte[]>listener,Response.ErrorListener errorListener){
+    public ByteArrayRequest(int method, String url, Object postBody, Response.Listener<byte[]>listener, Response.ErrorListener errorListener){
         super(method,url,errorListener);
         this.mPostBody = postBody;
         this.mListener = listener;
@@ -51,7 +51,7 @@ public class ByteArrayRequest extends Request<byte[]> {
 
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
-        Map<String,String>headers = super.getHeaders();
+        Map<String,String> headers = super.getHeaders();
         if (null == headers || headers.equals(Collections.emptyMap()))
         {
             headers = new HashMap<String,String>();

@@ -95,8 +95,8 @@ public class IRequest {
         RequestManager.post(url, context, params, l);
     }
 
-    public static void post2(Context context, String url, JSONObject jsonObject,
-                            RequestListener l) {
+    public static void postJson(Context context, String url, JSONObject jsonObject,
+                                RequestListener l) {
         RequestManager.post2(url, context, jsonObject, l);
     }
 

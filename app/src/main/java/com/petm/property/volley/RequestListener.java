@@ -11,7 +11,7 @@ import org.json.JSONObject;
  * VolleyUtils
  */
 public interface RequestListener {
-    void requestSuccess(String json);
+//    void requestSuccess(String json); //需要时在选择实现
     void requestSuccess(JSONObject json);
     void requestError(VolleyError error);
 }

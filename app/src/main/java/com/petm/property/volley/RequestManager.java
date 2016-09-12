@@ -9,10 +9,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
-import com.ldd.volleyutils.ApplicationTest;
-import com.ldd.volleyutils.fragments.LoadingFragment;
-import com.ldd.volleyutils.utils.JsonUtils;
+import com.petm.property.PetMApplication;
+import com.petm.property.common.Constant;
+import com.petm.property.fragments.LoadingFragment;
+import com.petm.property.utils.CommonUtils;
+import com.petm.property.utils.JsonUtils;
+import com.petm.property.utils.RSAEncryptor;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -24,8 +28,8 @@ import java.io.UnsupportedEncodingException;
  * VolleyUtils
  */
 public class RequestManager {
-    public static RequestQueue mRequestQueue = Volley.newRequestQueue(ApplicationTest.getContext());
-
+    public static RequestQueue mRequestQueue = Volley.newRequestQueue(PetMApplication.getConText());
+    private static RSAEncryptor rsaEncryptor;
     public RequestManager() {
     }
 
@@ -48,7 +52,7 @@ public class RequestManager {
      * @param progressTitle
      * @param listener
      */
-    public static void get(String url,Object tag,String progressTitle,RequestListener listener){
+    public static void get(String url, Object tag, String progressTitle, RequestListener listener){
         LoadingFragment dialog = new LoadingFragment();
         dialog.show(((FragmentActivity)tag).getSupportFragmentManager(), "Loading");
         dialog.setMsg(progressTitle);
@@ -65,7 +69,7 @@ public class RequestManager {
      * @param listener
      * @param <T>
      */
-    public static <T> void get(String url,Object tag,Class<T> classofT,RequestJsonListener<T> listener){
+    public static <T> void get(String url, Object tag, Class<T> classofT, RequestJsonListener<T> listener){
         ByteArrayRequest request = new ByteArrayRequest(Request.Method.GET,url,null,responseListener(listener,classofT,false,null),
                responseError(listener,false,null));
         addRequest(request,tag);
@@ -81,8 +85,8 @@ public class RequestManager {
      * @param listener
      * @param <T>
      */
-    public static <T> void get(String url,Object tag,Class<T> classOfT,
-                               String progressTitle,boolean LoadingShow,RequestJsonListener<T> listener){
+    public static <T> void get(String url, Object tag, Class<T> classOfT,
+                               String progressTitle, boolean LoadingShow, RequestJsonListener<T> listener){
         LoadingFragment dialog = new LoadingFragment();
         if (LoadingShow){
             dialog.show(((FragmentActivity)tag).getSupportFragmentManager(),"Loading");
@@ -101,16 +105,24 @@ public class RequestManager {
      * @param params
      * @param listener
      */
-    public static void post(String url,Object tag,RequestParams params,RequestListener listener){
+    public static void post(String url, Object tag, RequestParams params, RequestListener listener){
         ByteArrayRequest request = new ByteArrayRequest(Request.Method.POST,url,params,responseListener(listener,false,null),
                 responseError(listener,false,null));
         addRequest(request,tag);
     }
 
 
-    public static void post2(String url,Object tag,JSONObject params,RequestListener listener){
+    public static void post2(String url, Object tag, JSONObject params, RequestListener listener){
 //        ByteArrayRequest request = new ByteArrayRequest(Request.Method.POST,url,params,responseListener(listener,false,null),
 //                responseError(listener,false,null));
+        try {
+            String tokens;
+            rsaEncryptor = new RSAEncryptor(Constant.RSA_PUBLIC_KEY, Constant.PKCS8_PRIVATE_KEY);
+            tokens = url+","+"com.wuxianying.gd720"+","+ CommonUtils.getTimeStamp()+","+PetMApplication.getDeviceIMEI();
+            params.put("token",rsaEncryptor.encryptWithBase64(tokens));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         JsonRequest<JSONObject> request1 = new JsonObjectRequest(Request.Method.POST,url,params,responseListener2(listener,false,null),
                 responseError(listener,false,null));
         addRequest(request1,tag);
@@ -227,7 +239,12 @@ public class RequestManager {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                l.requestSuccess(data);
+                JSONObject object = new JSONObject();
+                try {
+                    l.requestSuccess(object.getJSONObject(data));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 if (flag) {
                     if (p.getShowsDialog()) {
                         p.dismiss();
