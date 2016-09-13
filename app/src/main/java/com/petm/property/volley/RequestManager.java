@@ -115,14 +115,14 @@ public class RequestManager {
     public static void post2(String url, Object tag, JSONObject params, RequestListener listener){
 //        ByteArrayRequest request = new ByteArrayRequest(Request.Method.POST,url,params,responseListener(listener,false,null),
 //                responseError(listener,false,null));
-        try {
-            String tokens;
-            rsaEncryptor = new RSAEncryptor(Constant.RSA_PUBLIC_KEY, Constant.PKCS8_PRIVATE_KEY);
-            tokens = url+","+"com.wuxianying.gd720"+","+ CommonUtils.getTimeStamp()+","+PetMApplication.getDeviceIMEI();
-            params.put("token",rsaEncryptor.encryptWithBase64(tokens));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            String tokens;
+//            rsaEncryptor = new RSAEncryptor(Constant.RSA_PUBLIC_KEY, Constant.PKCS8_PRIVATE_KEY);
+//            tokens = url+","+"com.wuxianying.gd720"+","+ CommonUtils.getTimeStamp()+","+PetMApplication.getDeviceIMEI();
+//            params.put("token",rsaEncryptor.encryptWithBase64(tokens));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         JsonRequest<JSONObject> request1 = new JsonObjectRequest(Request.Method.POST,url,params,responseListener2(listener,false,null),
                 responseError(listener,false,null));
         addRequest(request1,tag);

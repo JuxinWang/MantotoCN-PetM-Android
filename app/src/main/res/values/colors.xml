@@ -11,4 +11,7 @@
     <color name="main_background">#F2F2F2</color>
     <color name="main_gray_background">#CCCCCC</color>
     <color name="main_gray_bg">#F0F0F0</color>
+    <color name="red">#FF0000</color>
+    <color name="register">#66FFFFFF</color>
+    <color name="register_pressed">#55FFFFFF</color>
 </resources>

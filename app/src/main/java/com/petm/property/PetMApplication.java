@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.telephony.TelephonyManager;
 
+import com.petm.property.common.LocalStore;
 import com.petm.property.utils.LogU;
 
 /**
@@ -22,6 +23,7 @@ public class PetMApplication extends Application {
         LogU.isDebug = true;
         TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
         DeviceImei = tm.getDeviceId();//需要读取手机权限android.permission.READ_PHONE_STATE.
+//        LocalStore.initUserInfo(mConText);
     }
 
     public static String getDeviceIMEI() {

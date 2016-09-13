@@ -32,6 +32,107 @@ public class Constant {
     /**
      * 测试服务器地址
      */
-    public static final String URL = "http://dev.mantoto.com/";
+//    public static final String URL = "http://dev.mantoto.com/";
+    public static final String URL = "http://192.168.0.20:8080/PetM-WebApi/";
+    /**
+     * 通过手机号获取验证码
+     */
+    public static final String GET_PHONE_CODE ="http://123.56.96.68:8080/sendCode/sendCodeWithNum/";
+    /**
+     * 以后采用短信登录使用
+     */
+    public static final String GET_RANT_CODE = "http://sms.wuxianying.com/sendCode/sendSMS/";
+    /**
+     * 用户登录注册
+     */
+    public static final String USER_ACTIVATE = URL+"/UserActivate";
+    /**
+     * 获取用户添加店铺列表
+     */
+    public static final String PET_SHOP_GET = URL+"/PetShopGetByKeeper";
+    /**
+     * 用户通过宠物店预约电话添加宠物店
+     */
+    public static final String PETSHOP_RELATE = URL+"/PetShopRelate";
+    /**
+     * 获取用户全部提醒
+     */
+    public static final String REMIND_GET_ALL =URL+ "/ReminderGetAll";
+    /**
+     * 获取用户个人信息
+     */
+    public static final String USERINFO_GET =URL+ "/UserInfoGet/";
+    /**
+     * 更新用户信息
+     */
+    public static final String USERINFO_UPDATE =URL+ "/UserInfoUpdate";
+    /**
+     * 获取用户消费信息
+     */
+    public static final String USER_GIFT_GET =URL+ "/UserGiftGet";
+    /**
+     * 获取用户全部宠物列表
+     */
+    public static final String PET_GET_ALL =URL+ "/PetGetAll";
+    /**
+     * 添加宠物
+     */
+    public static final String PET_ADD =URL+ "/PetAdd";
+    /**
+     * 获取服务列表
+     */
+    public static final String  PETSERVICE_GET_ALL = URL+"/PetServiceGetAll";
+    /**
+     * /获取美容师列表
+     */
+    public static final String  BEAUTICIAN_GET_ALL =URL+ "/BeauticianGetAll";
+    /**
+     * 删除宠物
+     */
+    public static final String PET_DELETE =URL+ "/PetDelete";
+    /**
+     * 用户删除宠物店
+     */
+    public static final String PETSHOP_DELETE= URL+"/PetShopDelete";
+    /**
+     * 获得宠物订单信息
+     */
+    public static final String REMIND_WORKO_ORDER_GET_BY_KEEPER = URL+"/ReminderWorkOrderGetByKeeper";
+    /**
+     * 获取疫苗列表
+     */
+    public static final String VACCIN_GET = URL+"/VaccinGet";
+    /**
+     * 获取单个宠物疫苗信息
+     */
+    public static final String PET_VACCIN_GET =URL+ "/PetVaccinGet";
+    /**
+     * 预约服务
+     */
+    public static final String PET_WORK_CREATE = URL+ "PetWorkOrderCreate";
+    /**
+     * 取消预约
+     */
+    public static final String PET_WORK_CANCEL = URL+ "/PetWorkOrderCancel";
+    /**
+     * 获取用户所有信息
+     */
+    public static final String GET_REMIND_ALL = URL+ "/ReminderGetPetAll";
+    /**
+     * 获取宠物种类列表
+     */
+    public static final String GET_PET_CATEGORY = URL+ "/PetCategoryGet";
+    /**
+     * 编辑宠物
+     */
+    public static final String PET_EDIT = URL+ "/PetEdit";
+    /**
+     * 更新宠物头像
+     */
+    public static final String PET_HEAD_SHOT_EDIT = URL+ "/PetHeadShotEdit";
+    /**
+     * 批量更新疫苗信息
+     */
+    public static final String VACCIN_EDIT = URL+ "/VaccinEdit";
 
 }

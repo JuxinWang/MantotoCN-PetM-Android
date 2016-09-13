@@ -2,6 +2,9 @@ package com.petm.property.common;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+
+import com.petm.property.model.Keeper;
 
 /**
  * Created by liudongdong on 2016/8/14.
@@ -11,46 +14,47 @@ public class LocalStore {
     public final static String USER_INFO = "user_info";//存储用户登录信息
     public final static String USER_ID = "userid";
     public final static String USER_NAME = "username";
-    public final static String USER_PROPERTYID="userpropertyid";
+    public final static String KEEPERID="keeperid";
     public final static String USER_MOBILE="mobile";
-//    public static UserInfo userInfo;//用户信息
+    public static Keeper keeperInfo;//用户信息
 
-//    /**
-//     * 初始化UserInfo
-//     * @param context
-//     */
-//    public static void initUserInfo (Context context){
-//        SharedPreferences saving = context.getSharedPreferences(USER_INFO,context.MODE_PRIVATE);
-//        userInfo = new UserInfo();
-//        userInfo.UserID = saving.getLong(USER_ID,0);
-//        userInfo.UserName = saving.getString(USER_NAME, "");
-//        userInfo.PropertyID=saving.getLong(USER_PROPERTYID, 0);
-//        userInfo.Mobile=saving.getString(USER_MOBILE, "");
-//    }
-//
-//    /**
-//     * 存储用户登录信息
-//     * @param context
-//     * @param user
-//     */
-//    public static void setUserInfo(Context context, UserInfo user){
-//        SharedPreferences saving = context.getSharedPreferences(USER_INFO,context.MODE_PRIVATE);
-//        saving.edit().putLong(USER_ID,user.UserID).commit();
-//        saving.edit().putString(USER_NAME, user.UserName).commit();
-//        saving.edit().putLong(USER_PROPERTYID, user.PropertyID).commit();
-//        saving.edit().putString(USER_MOBILE, user.Mobile).commit();
-//        userInfo.UserID = user.UserID;
-//        userInfo.UserName = user.UserName;
-//        userInfo.PropertyID = user.PropertyID;
-//        userInfo.Mobile = user.Mobile;
-//    }
-//
-//    /**
-//     * 获取用户存储信息
-//     * @return
-//     */
-//    public static  UserInfo getUserInfo(){
-//        return userInfo;
-//    }
+    /**
+     * 初始化UserInfo
+     * @param context
+     */
+    public static void initUserInfo (Context context){
+        SharedPreferences saving = context.getSharedPreferences(USER_INFO,0);
+        keeperInfo = new Keeper();
+        keeperInfo.userid = saving.getLong(USER_ID, 0);
+        keeperInfo.user.username = saving.getString(USER_NAME, "");
+        keeperInfo.keeperid = saving.getLong(KEEPERID, 0);
+        keeperInfo.user.mobile = saving.getString(USER_MOBILE, "");
+    }
+
+    /**
+     * 存储用户登录信息
+     * @param context
+     * @param user
+     */
+    public static void setUserInfo(Context context, Keeper keeper){
+        SharedPreferences saving = context.getSharedPreferences(USER_INFO,0);
+        Log.i("Local",""+keeper.keeperid);
+        saving.edit().putLong(USER_ID,keeper.userid).commit();
+        saving.edit().putString(USER_NAME, keeper.user.username).commit();
+        saving.edit().putLong(KEEPERID, keeper.keeperid).commit();
+        saving.edit().putString(USER_MOBILE, keeper.user.mobile).commit();
+//        keeperInfo.userid = keeper.userid;
+//        keeperInfo.user.username = keeper.user.username;
+//        keeperInfo.keeperid = keeper.keeperid;
+//        keeperInfo.user.mobile = keeper.user.mobile;
+    }
+
+    /**
+     * 获取用户存储信息
+     * @return
+     */
+    public static  Keeper getUserInfo(){
+        return keeperInfo;
+    }
 
 }
