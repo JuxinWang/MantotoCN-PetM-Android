@@ -6,7 +6,9 @@
 
     <color name="black">#000000</color>
     <color name="whiter">#FFFFFF</color>
-    <color name="main_color">#FF7E00</color>
+    <color name="whiter_trans">#FFFFFFFF</color>
+    <color name="main_color">#FFDE03</color>
+    <color name="main_color_press">#FFDE99</color>
     <color name="main_button_bg">#CC7E00</color>
     <color name="main_background">#F2F2F2</color>
     <color name="main_gray_background">#CCCCCC</color>
@@ -14,4 +16,5 @@
     <color name="red">#FF0000</color>
     <color name="register">#66FFFFFF</color>
     <color name="register_pressed">#55FFFFFF</color>
+    <color name="main_bg">#F6F3EE</color>
 </resources>

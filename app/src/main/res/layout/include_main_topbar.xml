@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/top_bar"
     android:layout_width="match_parent"
-    android:background="@color/whiter"
+    android:background="@color/main_color"
     android:layout_height="wrap_content">
     <RelativeLayout
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/back_select"
+            android:src="@drawable/top_left_back"
             android:padding="10dp"
             android:onClick="onClick"
             android:clickable="true"
@@ -24,7 +24,7 @@
             android:id="@+id/top_bar_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="@color/whiter"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             android:textSize="20sp" />

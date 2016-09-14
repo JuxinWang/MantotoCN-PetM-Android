@@ -14,6 +14,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.petm.property.R;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -42,6 +44,7 @@ public abstract class BaseActivity extends FragmentActivity {
         if (getContentViewResId() != 0){
             setContentView(getContentViewResId());
         }
+
         //设置状态栏颜色
         initSystemBar(this);
         initTopBar();
@@ -146,7 +149,7 @@ public abstract class BaseActivity extends FragmentActivity {
 
     public void initAnimation(){
         load_loading = findViewById(R.id.load_loading);
-        loadingImageView.setBackgroundResource(R.drawable.loading);
+        loadingImageView.setBackgroundResource(R.anim.loading);
         animation = (AnimationDrawable) loadingImageView.getBackground();
         animation.setOneShot(false);
         startAnimation();

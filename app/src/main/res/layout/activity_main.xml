@@ -2,12 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/main_bg"
     android:fitsSystemWindows="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="45dp"
+        android:layout_marginBottom="47dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -52,6 +53,7 @@
             </RelativeLayout>
 
             <LinearLayout
+                android:id="@+id/pet_shops"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -64,19 +66,24 @@
                     android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
 
                 <ImageView
+                    android:id="@+id/add_petshop_two"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="3dp"
+                    android:layout_marginTop="5dp"
+                    android:clickable="true"
+                    android:onClick="onClick"
                     android:src="@drawable/main_add_small" />
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/add_petshop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/add_petshop_img"
@@ -99,6 +106,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:background="@color/whiter"
+            android:layout_marginTop="10dp"
             android:layout_gravity="center_vertical">
 
             <TextView
@@ -108,24 +117,38 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="10dp"
                 android:text="欢迎使用宠乐约"
+                android:singleLine="true"
                 android:textColor="@color/black" />
 
             <ImageView
+                android:id="@+id/remind"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:onClick="onClick"
+                android:clickable="true"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="10dp"
                 android:src="@drawable/main_sort" />
         </LinearLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/pet_work_order"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </android.support.v7.widget.RecyclerView>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/whiter"
+        android:layout_marginTop="2dp"
         android:layout_alignParentBottom="true">
         <LinearLayout
+            android:id="@+id/petcenter"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:onClick="onClick"
+            android:clickable="true"
             android:layout_marginLeft="10dp"
             android:orientation="vertical">
             <ImageView
@@ -142,9 +165,12 @@
             android:layout_height="match_parent"
             android:layout_weight="1"/>
         <LinearLayout
+            android:id="@+id/personcenter"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:onClick="onClick"
+            android:clickable="true"
             android:layout_marginRight="10dp"
             android:orientation="vertical">
             <ImageView

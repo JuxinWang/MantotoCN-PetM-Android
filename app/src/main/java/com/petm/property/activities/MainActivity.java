@@ -1,13 +1,20 @@
 package com.petm.property.activities;
 
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.android.volley.VolleyError;
 import com.petm.property.R;
+import com.petm.property.adapter.PetshopAdapter;
 import com.petm.property.common.Constant;
+import com.petm.property.fragments.LoadingFragment;
+import com.petm.property.model.VOPetShop;
+import com.petm.property.utils.JsonUtils;
 import com.petm.property.utils.LogU;
 import com.petm.property.utils.ToastU;
 import com.petm.property.volley.IRequest;
@@ -20,6 +27,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "MainActivity";
     private RecyclerView mPetshops;
     private ImageView addPetshop;
+    private LinearLayout addPetShopLL,petshopsLL;
+    private RecyclerView petShopsRecyclerView;
+    private LinearLayoutManager layoutManager;
+    private PetshopAdapter petshopAdapter;
+    private LoadingFragment fragment;
     @Override
     protected int getContentViewResId() {
         return R.layout.activity_main;
@@ -28,9 +40,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void initViews() {
         super.initViews();
-        loadDatas();
         addPetshop = (ImageView) findViewById(R.id.add_petshop_img);
         mPetshops = (RecyclerView) findViewById(R.id.petshops_recycler);
+        addPetShopLL = (LinearLayout) findViewById(R.id.add_petshop);
+        petshopsLL = (LinearLayout) findViewById(R.id.pet_shops);
+        petShopsRecyclerView = (RecyclerView) findViewById(R.id.petshops_recycler);
+        layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        petShopsRecyclerView.setLayoutManager(layoutManager);
+        fragment = new LoadingFragment();
+        fragment.show(getSupportFragmentManager(),"Loading");
+        loadDatas();
     }
 
     @Override
@@ -45,23 +65,53 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         IRequest.postJson(MainActivity.this, Constant.PET_SHOP_GET, object, new RequestListener() {
             @Override
             public void requestSuccess(JSONObject json) {
-                ToastU.showShort(MainActivity.this,json.toString());
-                LogU.i(TAG,json.toString());
+                fragment.dismiss();
+                ToastU.showShort(MainActivity.this, json.toString());
+                LogU.i(TAG, json.toString());
+                VOPetShop petShops = JsonUtils.object(json.toString(),VOPetShop.class);
+                if (petShops.code == 200){
+                    if(petShops.data.size()==0){
+                        addPetShopLL.setVisibility(View.VISIBLE);
+                    }else {
+                        petshopsLL.setVisibility(View.VISIBLE);
+                        petshopAdapter = new PetshopAdapter(MainActivity.this,petShops.data);
+                        petShopsRecyclerView.setAdapter(petshopAdapter);
+                    }
+                }
             }
 
             @Override
             public void requestError(VolleyError error) {
-
+                fragment.dismiss();
+                ToastU.showShort(MainActivity.this,error.getMessage());
             }
         });
     }
 
     @Override
     public void onClick(View v) {
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         switch (v.getId()){
             case R.id.add_petshop_img:
-                Intent intent = new Intent();
-                intent.setClass(MainActivity.this,RegisterActivity.class);
+                intent.setClass(MainActivity.this, AddPetshopActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.add_petshop_two:
+                intent.setClass(MainActivity.this, AddPetshopActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.petcenter:
+                intent.setClass(MainActivity.this,PetCenterActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.personcenter:
+                intent.setClass(MainActivity.this,PersonCenterActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.remind:
+                intent.setClass(MainActivity.this,RemindActivity.class);
                 startActivity(intent);
                 break;
         }

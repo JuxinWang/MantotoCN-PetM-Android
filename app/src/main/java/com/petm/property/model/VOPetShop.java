@@ -1,5 +1,7 @@
 package com.petm.property.model;
 
+import java.util.List;
+
 /**
  * Created by Mr.liu
  * On 2016/9/13
@@ -7,5 +9,5 @@ package com.petm.property.model;
  * PetM
  */
 public class VOPetShop extends NetInfo {
-    public InfoPetShop data;
+    public List<InfoPetShop> data;
 }
