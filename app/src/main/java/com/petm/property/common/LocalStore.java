@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.petm.property.model.Keeper;
+import com.petm.property.model.User;
 
 /**
  * Created by liudongdong on 2016/8/14.
@@ -16,7 +17,7 @@ public class LocalStore {
     public final static String USER_NAME = "username";
     public final static String KEEPERID="keeperid";
     public final static String USER_MOBILE="mobile";
-    public static Keeper keeperInfo;//用户信息
+    public static User user;//用户信息
 
     /**
      * 初始化UserInfo
@@ -24,11 +25,10 @@ public class LocalStore {
      */
     public static void initUserInfo (Context context){
         SharedPreferences saving = context.getSharedPreferences(USER_INFO,0);
-        keeperInfo = new Keeper();
-        keeperInfo.userid = saving.getLong(USER_ID, 0);
-        keeperInfo.user.username = saving.getString(USER_NAME, "");
-        keeperInfo.keeperid = saving.getLong(KEEPERID, 0);
-        keeperInfo.user.mobile = saving.getString(USER_MOBILE, "");
+        user = new User();
+        user.userid = saving.getLong(USER_ID, 0);
+        user.username = saving.getString(USER_NAME, "");
+        user.mobile = saving.getString(USER_MOBILE, "");
     }
 
     /**
@@ -36,25 +36,42 @@ public class LocalStore {
      * @param context
      * @param user
      */
-    public static void setUserInfo(Context context, Keeper keeper){
+    public static void setUserInfo(Context context, User user){
         SharedPreferences saving = context.getSharedPreferences(USER_INFO,0);
-        Log.i("Local",""+keeper.keeperid);
-        saving.edit().putLong(USER_ID,keeper.userid).commit();
-        saving.edit().putString(USER_NAME, keeper.user.username).commit();
-        saving.edit().putLong(KEEPERID, keeper.keeperid).commit();
-        saving.edit().putString(USER_MOBILE, keeper.user.mobile).commit();
-//        keeperInfo.userid = keeper.userid;
-//        keeperInfo.user.username = keeper.user.username;
-//        keeperInfo.keeperid = keeper.keeperid;
-//        keeperInfo.user.mobile = keeper.user.mobile;
+        saving.edit().putLong(USER_ID, user.userid).commit();
+        saving.edit().putString(USER_NAME, user.username).commit();
+        saving.edit().putString(USER_MOBILE, user.mobile).commit();
+        user.userid = user.userid;
+        user.username = user.username;
+        user.mobile = user.mobile;
     }
 
     /**
      * 获取用户存储信息
      * @return
      */
-    public static  Keeper getUserInfo(){
-        return keeperInfo;
+    public static  User getUserInfo(){
+        return user;
+    }
+
+    /**
+     * 存储用户keeperid
+     * @param context
+     * @param keeperid
+     */
+    public static void setKeeperid(Context context, long keeperid){
+        SharedPreferences saving = context.getSharedPreferences(USER_INFO, 0);
+        saving.edit().putLong(KEEPERID, keeperid).commit();
+    }
+
+    /**
+     * 获取用户keeperid
+     * @param context
+     * @return
+     */
+    public static long getKeeperid(Context context){
+        SharedPreferences saving = context.getSharedPreferences(USER_INFO, 0);
+        return saving.getLong(KEEPERID, 0);
     }
 
 }

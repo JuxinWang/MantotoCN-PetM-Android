@@ -12,6 +12,7 @@ import com.android.volley.VolleyError;
 import com.petm.property.R;
 import com.petm.property.adapter.PetshopAdapter;
 import com.petm.property.common.Constant;
+import com.petm.property.common.LocalStore;
 import com.petm.property.fragments.LoadingFragment;
 import com.petm.property.model.VOPetShop;
 import com.petm.property.utils.JsonUtils;
@@ -58,7 +59,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.loadDatas();
         JSONObject object = new JSONObject();
         try {
-            object.put("keeperid",15721584006722L);
+            object.put("keeperid", LocalStore.getKeeperid(MainActivity.this));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -66,7 +67,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void requestSuccess(JSONObject json) {
                 fragment.dismiss();
-                ToastU.showShort(MainActivity.this, json.toString());
+//                ToastU.showShort(MainActivity.this, json.toString());
                 LogU.i(TAG, json.toString());
                 VOPetShop petShops = JsonUtils.object(json.toString(),VOPetShop.class);
                 if (petShops.code == 200){
@@ -99,7 +100,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 startActivity(intent);
                 break;
             case R.id.add_petshop_two:
-                intent.setClass(MainActivity.this, AddPetshopActivity.class);
+                intent.setClass(MainActivity.this, RegisterActivity.class);
                 startActivity(intent);
                 break;
             case R.id.petcenter:

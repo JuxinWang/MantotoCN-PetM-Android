@@ -7,21 +7,26 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
         android:layout_marginRight="10dp">
+
         <com.petm.property.views.RoundImageView
-            android:id="@+id/petshopImg"
+            android:id="@+id/petImg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             custom:borderRadius="10dp"
             custom:type="round"
             android:src="@drawable/add_pet_bg" />
         <TextView
-            android:id="@+id/petshopName"
+            android:id="@+id/petName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/pet_name_bg"
             android:gravity="center"
             android:layout_gravity="bottom"
+            android:textColor="@color/whiter"
+            android:textSize="18sp"
             android:text="乔妮宠物店"/>
     </FrameLayout>
 </LinearLayout>

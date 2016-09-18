@@ -117,12 +117,12 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 InfoUser userInfo = JsonUtils.object(json.toString(),InfoUser.class);
                 if (userInfo.code == 200){
                     Log.i(TAG,""+userInfo.data.user.username);
-                    LocalStore.setUserInfo(RegisterActivity.this,userInfo.data);
+                    LocalStore.setKeeperid(RegisterActivity.this, userInfo.data.keeperid);
                     Intent intent = new Intent();
                     intent.setClass(RegisterActivity.this,MainActivity.class);
                     startActivity(intent);
                     finish();
-//                    ToastU.showShort(RegisterActivity.this,""+LocalStore.getUserInfo().keeperid);
+                    ToastU.showShort(RegisterActivity.this, "" + LocalStore.getKeeperid(RegisterActivity.this));
                 }else {
                     ToastU.showShort(RegisterActivity.this,userInfo.desc);
                 }
