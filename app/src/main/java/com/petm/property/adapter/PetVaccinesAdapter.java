@@ -10,8 +10,12 @@ import android.widget.TextView;
 
 import com.petm.property.R;
 import com.petm.property.model.PetVaccines;
+import com.petm.property.views.TimePopupWindow;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Mr.liu
@@ -24,11 +28,15 @@ public class PetVaccinesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private Context mContext;
     private List<PetVaccines> petVaccines;
     private LayoutInflater mLayoutInflate;
-
-    public PetVaccinesAdapter(Context mContext, List<PetVaccines> petVaccines) {
+    OnDateChangedListener onDateChangedListener;
+    private List<String> lists = new ArrayList<>();
+    private Map<Integer,String> maps = new HashMap<>();
+    public PetVaccinesAdapter(Context mContext, List<PetVaccines> petVaccines, Map<Integer,String> maps) {
         this.mContext = mContext;
         this.petVaccines = petVaccines;
+        this.maps = maps;
         mLayoutInflate = LayoutInflater.from(mContext);
+        onDateChangedListener = (OnDateChangedListener) mContext;
     }
 
     public static class ContentViewHolder extends RecyclerView.ViewHolder{
@@ -48,8 +56,17 @@ public class PetVaccinesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+        final int temp = position;
         ((ContentViewHolder)holder).petVaccineName.setText("上次" + petVaccines.get(position).vaccinname);
+        ((ContentViewHolder) holder).petVaccineDate.setText(maps.get(position));
+        ((ContentViewHolder)holder).selectImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lists.add("" + petVaccines.get(temp).vaccinid);
+                onDateChangedListener.OnDateChanged(""+petVaccines.get(temp).vaccinid, position);
+            }
+        });
     }
 
     @Override
@@ -59,5 +76,9 @@ public class PetVaccinesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public static interface OnItemClickListener{
         void OnItemClick(View view,String data);
+    }
+
+    public interface OnDateChangedListener{
+        void OnDateChanged(String string,int position);
     }
 }

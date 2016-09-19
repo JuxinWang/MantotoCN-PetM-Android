@@ -1,20 +1,35 @@
 package com.petm.property.activities;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.petm.property.R;
+import com.petm.property.common.Constant;
 import com.petm.property.fragments.ConsumeInfoFragment;
 import com.petm.property.fragments.MyInfoFragment;
 import com.petm.property.fragments.OrderInfoFragment;
+import com.petm.property.utils.FileUtils;
+import com.petm.property.utils.SelectHeadTools;
 import com.petm.property.utils.ToastU;
+import com.petm.property.views.OptionsPopupWindow;
+import com.petm.property.views.TimePopupWindow;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Mr.liu
@@ -29,6 +44,7 @@ public class PersonCenterActivity extends BaseActivity implements View.OnClickLi
     private ViewPager mViewPage;
     private ArrayList<Fragment> fragments;
     private int lineWidth;
+    private Uri photoUri = null;
     @Override
     protected int getContentViewResId() {
         return R.layout.activity_person_center;
@@ -95,7 +111,17 @@ public class PersonCenterActivity extends BaseActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.head_img:
-                ToastU.showShort(PersonCenterActivity.this,"image");
+                if(!FileUtils.hasSdcard()){
+                    Toast.makeText(this, "没有找到SD卡，请检查SD卡是否存在", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                try {
+                    photoUri = FileUtils.getUriByFileDirAndFileName(Constant.SAVE_DIRECTORY, Constant.SAVE_PIC_NAME);
+                } catch (IOException e) {
+                    Toast.makeText(this, "创建文件失败。", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                SelectHeadTools.openDialog(this, photoUri);
                 break;
             case R.id.mine_info:
                 mViewPage.setCurrentItem(0);
@@ -155,4 +181,29 @@ public class PersonCenterActivity extends BaseActivity implements View.OnClickLi
                     .setDuration(200);
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case Constant.PHOTO_REQUEST_TAKEPHOTO: // 拍照
+                SelectHeadTools.startPhotoZoom(this,photoUri, 600);
+                break;
+            case Constant.PHOTO_REQUEST_GALLERY://相册获取
+                if (data==null)
+                    return;
+                SelectHeadTools.startPhotoZoom(this, data.getData(), 600);
+                break;
+            case Constant.PHOTO_REQUEST_CUT:  //接收处理返回的图片结果
+                if (data==null)
+                    return;
+                try {
+                    Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(SelectHeadTools.path));
+                    headImg.setImageBitmap(bitmap);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+    }
+
 }

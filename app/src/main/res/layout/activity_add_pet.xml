@@ -52,12 +52,14 @@
                 android:textSize="18sp" />
 
             <EditText
+                android:id="@+id/pet_name"
                 android:layout_width="0dp"
                 android:layout_height="35dp"
                 android:layout_marginLeft="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/add_main_color_et_bg"
-                android:paddingLeft="3dp"
+                android:paddingLeft="5dp"
+                android:textColor="@color/whiter"
                 android:textCursorDrawable="@drawable/editext_cursor_color" />
         </LinearLayout>
 
@@ -78,13 +80,17 @@
                 android:textSize="18sp" />
 
             <EditText
+                android:id="@+id/pet_birthday"
                 android:layout_width="0dp"
                 android:layout_height="35dp"
                 android:layout_marginLeft="3dp"
                 android:layout_weight="1"
                 android:focusable="false"
+                android:onClick="onClick"
+                android:clickable="true"
+                android:textColor="@color/whiter"
                 android:background="@drawable/add_main_color_et_bg"
-                android:paddingLeft="3dp"
+                android:paddingLeft="5dp"
                 android:textCursorDrawable="@drawable/editext_cursor_color" />
         </LinearLayout>
 
@@ -109,22 +115,27 @@
                 android:layout_height="35dp"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:layout_marginLeft="3dp"
                 android:background="@drawable/add_main_color_et_bg">
 
                 <EditText
+                    android:id="@+id/pet_category"
                     android:layout_width="0dp"
                     android:layout_height="35dp"
-                    android:layout_marginLeft="3dp"
                     android:layout_weight="1"
-                    android:paddingLeft="3dp"
+                    android:paddingLeft="5dp"
                     android:background="@null"
                     android:focusable="false"
+                    android:textColor="@color/whiter"
                     android:textCursorDrawable="@drawable/editext_cursor_color" />
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginRight="10dp"
+                    android:id="@+id/pet_category_img"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="10dp"
+                    android:clickable="true"
+                    android:onClick="onClick"
                     android:src="@drawable/down_white" />
             </LinearLayout>
         </LinearLayout>
@@ -201,6 +212,7 @@
             android:layout_marginRight="20dp">
         </android.support.v7.widget.RecyclerView>
         <Button
+            android:id="@+id/save"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginTop="15dp"

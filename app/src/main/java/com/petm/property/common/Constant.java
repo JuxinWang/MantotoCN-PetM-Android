@@ -9,6 +9,28 @@ package com.petm.property.common;
 public class Constant {
 /******************************       常量定义          *******************************************/
     public static final boolean DEBUG = true;
+    /***
+     * 保存到本地的目录
+     */
+    public static final String SAVE_DIRECTORY = "/petm";
+    /***
+     * 保存到本地图片的名字
+     */
+    public static final String SAVE_PIC_NAME="temp.jpeg";
+    /***
+     *标记用户点击了从照相机获取图片  即拍照
+     */
+    public static final int PHOTO_REQUEST_TAKEPHOTO = 1;// 拍照
+    /***
+     *标记用户点击了从图库中获取图片  即从相册中取
+     */
+    public static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
+    /***
+     * 返回处理后的图片
+     */
+    public static final int PHOTO_REQUEST_CUT = 3;// 结果
+
+
     public static final String RSA_PUBLIC_KEY ="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDRsvj8cEaWr1pdG7+NUjaOIeHM\n" +
             "+v07kK9/g5JlcNXDKfMSn/xTQ7bpJ0l0yprsjaGeM+RImK/PTMzzRXHO+qsetJkO\n" +
             "MhMgNVtcATxKMLxpR1SFJy0mc8gWfqUqj1z9Wkka2MfmLZNlBifl+0Rl3Yfh85IX\n" +

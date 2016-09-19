@@ -17,4 +17,12 @@
     <color name="register">#66FFFFFF</color>
     <color name="register_pressed">#55FFFFFF</color>
     <color name="main_bg">#F6F3EE</color>
+
+    <color name="alertdialog_line">#c6c6c6</color>
+    <color name="actionsheet_blue">#037BFF</color>
+    <color name="actionsheet_red">#FD4A2E</color>
+    <color name="actionsheet_gray">#8F8F8F</color>
+
+    <color name="wheel_timebtn_nor">#54a3fa</color>
+    <color name="wheel_timebtn_pre">#CCCCCC</color>
 </resources>

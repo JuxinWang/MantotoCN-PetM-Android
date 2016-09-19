@@ -20,6 +20,7 @@
             android:textColor="@color/main_color"
             android:text="姓名:"/>
         <EditText
+            android:id="@+id/person_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -43,10 +44,14 @@
             android:textColor="@color/main_color"
             android:text="姓别:"/>
         <EditText
+            android:id="@+id/person_sex"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginLeft="3dp"
+            android:focusable="false"
+            android:onClick="onClick"
+            android:clickable="true"
             android:textCursorDrawable="@drawable/editext_cursor_color"
             android:background="@null"/>
     </LinearLayout>
@@ -66,15 +71,20 @@
             android:textColor="@color/main_color"
             android:text="生日:"/>
         <EditText
+            android:id="@+id/person_birthday"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginLeft="3dp"
+            android:focusable="false"
+            android:clickable="true"
+            android:onClick="onClick"
             android:textCursorDrawable="@drawable/editext_cursor_color"
             android:background="@null"/>
     </LinearLayout>
 
     <Button
+        android:id="@+id/save"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginLeft="40dp"
@@ -83,5 +93,7 @@
         android:textColor="@color/whiter"
         android:background="@drawable/save_bg_btn"
         style="?android:borderlessButtonStyle"
+        android:onClick="onClick"
+        android:clickable="true"
         android:text="保存"/>
 </LinearLayout>
