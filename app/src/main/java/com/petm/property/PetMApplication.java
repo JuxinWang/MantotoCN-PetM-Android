@@ -4,7 +4,12 @@ import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.telephony.TelephonyManager;
+import android.util.Log;
+import android.widget.Toast;
 
+import com.alibaba.sdk.android.AlibabaSDK;
+import com.alibaba.sdk.android.callback.InitResultCallback;
+import com.alibaba.sdk.android.media.MediaService;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -22,11 +27,15 @@ import com.petm.property.utils.LogU;
  * My Application
  */
 public class PetMApplication extends Application {
+    private static final String TAG = "PetMApplication";
     private static Context mConText;
     private static String DeviceImei;
+    public static final String NAMESPACE = "petm";
+    public static MediaService mediaService;
     @Override
     public void onCreate() {
         super.onCreate();
+        initAlibabaSDK();
         mConText = getApplicationContext();
         LogU.isDebug = true;
         TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
@@ -50,6 +59,26 @@ public class PetMApplication extends Application {
                 .build();//开始构建
         ImageLoader.getInstance().init(config);//全局初始化此配置
 //        LocalStore.initUserInfo(mConText);
+    }
+    public void initAlibabaSDK() {
+        MediaService.enableHttpDNS(); //如果用户为了避免域名劫持，可以启用HttpDNS
+        MediaService.enableLog(); //在调试时，可以打印日志。正式上线前可以关闭
+        AlibabaSDK.asyncInit(this, new InitResultCallback() {
+            @Override
+            public void onSuccess() {
+                Log.i(TAG, "AlibabaSDK   onSuccess");
+                mediaService = AlibabaSDK.getService(MediaService.class);
+                Toast.makeText(PetMApplication.this, "初始化成功 " , Toast.LENGTH_SHORT)
+                        .show();
+            }
+
+            @Override
+            public void onFailure(int code, String msg) {
+                Log.e(TAG, "AlibabaSDK onFailure  msg:" + msg + " code:" + code);
+                Toast.makeText(PetMApplication.this, "初始化失败 " + msg, Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
     }
 
     public static String getDeviceIMEI() {

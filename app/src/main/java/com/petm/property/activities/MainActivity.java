@@ -10,10 +10,13 @@ import android.widget.LinearLayout;
 
 import com.android.volley.VolleyError;
 import com.petm.property.R;
+import com.petm.property.adapter.PetsAdapter;
+import com.petm.property.adapter.PetsWorkOrderAdapter;
 import com.petm.property.adapter.PetshopAdapter;
 import com.petm.property.common.Constant;
 import com.petm.property.common.LocalStore;
 import com.petm.property.fragments.LoadingFragment;
+import com.petm.property.model.VOPet;
 import com.petm.property.model.VOPetShop;
 import com.petm.property.utils.JsonUtils;
 import com.petm.property.utils.LogU;
@@ -31,8 +34,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private LinearLayout addPetShopLL,petshopsLL;
     private RecyclerView petShopsRecyclerView;
     private LinearLayoutManager layoutManager;
+    private LinearLayoutManager layoutManager2;
     private PetshopAdapter petshopAdapter;
+    private RecyclerView petsRecycler;
     private LoadingFragment fragment;
+    private PetsWorkOrderAdapter petsAdapter;
     @Override
     protected int getContentViewResId() {
         return R.layout.activity_main;
@@ -46,9 +52,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         addPetShopLL = (LinearLayout) findViewById(R.id.add_petshop);
         petshopsLL = (LinearLayout) findViewById(R.id.pet_shops);
         petShopsRecyclerView = (RecyclerView) findViewById(R.id.petshops_recycler);
+        petsRecycler = (RecyclerView) findViewById(R.id.pet_work_order);
         layoutManager = new LinearLayoutManager(this);
+        layoutManager2 = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         petShopsRecyclerView.setLayoutManager(layoutManager);
+        layoutManager2.setOrientation(LinearLayoutManager.VERTICAL);
+        petsRecycler.setLayoutManager(layoutManager2);
         fragment = new LoadingFragment();
         fragment.show(getSupportFragmentManager(),"Loading");
         loadDatas();
@@ -69,13 +79,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 fragment.dismiss();
 //                ToastU.showShort(MainActivity.this, json.toString());
                 LogU.i(TAG, json.toString());
-                VOPetShop petShops = JsonUtils.object(json.toString(),VOPetShop.class);
-                if (petShops.code == 200){
-                    if(petShops.data.size()==0){
+                VOPetShop petShops = JsonUtils.object(json.toString(), VOPetShop.class);
+                if (petShops.code == 200) {
+                    if (petShops.data.size() == 0) {
                         addPetShopLL.setVisibility(View.VISIBLE);
-                    }else {
+                    } else {
                         petshopsLL.setVisibility(View.VISIBLE);
-                        petshopAdapter = new PetshopAdapter(MainActivity.this,petShops.data);
+                        petshopAdapter = new PetshopAdapter(MainActivity.this, petShops.data);
                         petShopsRecyclerView.setAdapter(petshopAdapter);
                     }
                 }
@@ -84,7 +94,35 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void requestError(VolleyError error) {
                 fragment.dismiss();
-                ToastU.showShort(MainActivity.this,error.getMessage());
+                ToastU.showShort(MainActivity.this, error.getMessage());
+            }
+        });
+
+        JSONObject object2 = new JSONObject();
+        try {
+            object2.put("keeperid", LocalStore.getKeeperid(MainActivity.this));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        IRequest.postJson(MainActivity.this, Constant.PET_GET_ALL, object, new RequestListener() {
+            @Override
+            public void requestSuccess(JSONObject json) {
+                fragment.dismiss();
+//                ToastU.showShort(PetCenterActivity.this, json.toString());
+                LogU.i(TAG, json.toString());
+                VOPet pets = JsonUtils.object(json.toString(), VOPet.class);
+                if (pets.code == 200) {
+                    petsAdapter = new PetsWorkOrderAdapter(MainActivity.this,pets.data);
+                    petsRecycler.setAdapter(petsAdapter);
+                }else {
+                    ToastU.showShort(getApplicationContext(),pets.desc);
+                }
+            }
+
+            @Override
+            public void requestError(VolleyError error) {
+                fragment.dismiss();
+                ToastU.showShort(MainActivity.this, error.getMessage());
             }
         });
     }
@@ -96,7 +134,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         switch (v.getId()){
             case R.id.add_petshop_img:
-                intent.setClass(MainActivity.this, AddPetshopActivity.class);
+                intent.setClass(MainActivity.this, RegisterActivity.class);
                 startActivity(intent);
                 break;
             case R.id.add_petshop_two:

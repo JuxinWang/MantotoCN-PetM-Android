@@ -149,7 +149,7 @@ public abstract class BaseActivity extends FragmentActivity {
 
     public void initAnimation(){
         load_loading = findViewById(R.id.load_loading);
-        loadingImageView.setBackgroundResource(R.anim.loading);
+        loadingImageView.setBackgroundResource(R.drawable.loading);
         animation = (AnimationDrawable) loadingImageView.getBackground();
         animation.setOneShot(false);
         startAnimation();

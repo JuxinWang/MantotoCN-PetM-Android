@@ -18,7 +18,8 @@ import java.util.List;
 
 
 public class SelectHeadTools {
-    public static final Uri path = Uri.parse("file://" + "/" + Environment.getExternalStorageDirectory().getPath() + "/" + "temp.jpg");
+    public static final String uriPath = "file://" + "/" + Environment.getExternalStorageDirectory().getPath() + "/" + "temp.jpg";
+    public static final Uri path = Uri.parse(uriPath);
     /*****
      * 打开选择框
      * @param context Context  Activity上下文对象
@@ -103,7 +104,6 @@ public class SelectHeadTools {
         intent.putExtra("outputX", size);
         intent.putExtra("outputY", size);
         intent.putExtra("return-data", true);
-        Uri.parse("file://" + "/" + Environment.getExternalStorageDirectory().getPath() + "/" + "small.jpg");
         intent.putExtra(MediaStore.EXTRA_OUTPUT, path);
         intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
         context.startActivityForResult(intent, Constant.PHOTO_REQUEST_CUT);

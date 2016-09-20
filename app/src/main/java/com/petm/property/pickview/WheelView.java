@@ -60,7 +60,7 @@ public class WheelView extends View {
 	private static final int MIN_DELTA_FOR_SCROLLING = 1;
 
 	/** Current value & label text color */
-	private static final int VALUE_TEXT_COLOR = 0xFF666666;
+	private static final int VALUE_TEXT_COLOR = 0xFF000000;
 
 	/** Items text color */
 	private static final int ITEMS_TEXT_COLOR = 0xFF666666;
@@ -70,7 +70,7 @@ public class WheelView extends View {
 			0x00AAAAAA, 0x00AAAAAA };
 
 	/** Additional items height (is added to standard text item height) */
-	private static final int ADDITIONAL_ITEM_HEIGHT = 15;
+	private static final int ADDITIONAL_ITEM_HEIGHT = 12;
 
 	/** Text size */
 	public int TEXT_SIZE;

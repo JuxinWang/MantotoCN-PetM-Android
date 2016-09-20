@@ -70,4 +70,16 @@
         <item name="android:windowExitAnimation">@anim/timepicker_anim_exit_bottom</item> <!-- 指定消失的动画xml -->
     </style>
 
+<!--对话框使用样式-->
+    <style name="color_dialog" parent="android:Theme.Dialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.4</item>
+    </style>
+
 </resources>
