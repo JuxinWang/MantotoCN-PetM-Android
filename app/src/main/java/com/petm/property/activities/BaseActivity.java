@@ -47,8 +47,8 @@ public abstract class BaseActivity extends FragmentActivity {
 
         //设置状态栏颜色
         initSystemBar(this);
-        initTopBar();
         initViews();
+        initTopBar();
         initEvents();
 
     }

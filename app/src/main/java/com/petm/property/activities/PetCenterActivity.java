@@ -1,6 +1,7 @@
 package com.petm.property.activities;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -34,6 +35,8 @@ public class PetCenterActivity extends BaseActivity implements View.OnClickListe
     private LinearLayoutManager layoutManager;
     private LoadingFragment fragment;
     private PetsAdapter mAdapter;
+    private String flag = "";
+    private long petshopid;
     @Override
     protected int getContentViewResId() {
         return R.layout.actvity_pet_center;
@@ -41,12 +44,26 @@ public class PetCenterActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     protected int getTopBarTextRes() {
+        if (flag .equals("petshop")){
+            return R.string.select_pet;
+        }
         return R.string.pet_center;
     }
 
     @Override
     protected int getTopBarRightImgRes() {
+        if (flag .equals("petshop")){
+            return 0;
+        }
         return R.drawable.mainaddsmallf;
+    }
+
+    @Override
+    protected int getTopBarRightTextRes() {
+        if (flag .equals("petshop")){
+            return R.string.pet_commit;
+        }
+        return 0;
     }
 
     @Override
@@ -59,6 +76,13 @@ public class PetCenterActivity extends BaseActivity implements View.OnClickListe
         petsRecycler.setLayoutManager(layoutManager);
         fragment = new LoadingFragment();
         fragment.show(getSupportFragmentManager(), "Loading");
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null){
+            flag = bundle.getString("flag");
+            if (flag.equals("petshop")){
+                petshopid = bundle.getLong("petshopid");
+            }
+        }
     }
 
     @Override
@@ -95,12 +119,17 @@ public class PetCenterActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         switch (v.getId()){
             case R.id.top_bar_right_img:
-                Intent intent = new Intent();
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-                        | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.setClass(PetCenterActivity.this,AddPetActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.top_bar_right_text:
+                intent.setClass(PetCenterActivity.this,OrderActivity.class);
+                intent.putExtra("petshopid",petshopid);
                 startActivity(intent);
                 break;
         }

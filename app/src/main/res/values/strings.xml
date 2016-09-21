@@ -3,10 +3,13 @@
     <string name="action_settings">Settings</string>
 
     <string name="pet_center">宠物中心</string>
+    <string name="select_pet">选择宠物</string>
+    <string name="pet_commit">提交</string>
     <string name="add_pet_shop">添加宠物店</string>
     <string name="person_center">我</string>
     <string name="remind">提醒</string>
     <string name="notification">通知</string>
+    <string name="order_service">服务预约</string>
 
     <string name="cancel">取消</string>
     <string name="pwSubmit">确定</string>

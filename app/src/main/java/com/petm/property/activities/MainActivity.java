@@ -65,6 +65,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        loadDatas();
+    }
+
+    @Override
     protected void loadDatas() {
         super.loadDatas();
         JSONObject object = new JSONObject();

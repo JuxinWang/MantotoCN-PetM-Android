@@ -26,6 +26,7 @@
         <activity android:name=".activities.AddPetshopActivity"/>
         <activity android:name=".activities.RemindActivity"/>
         <activity android:name=".activities.AddPetActivity"/>
+        <activity android:name=".activities.OrderActivity"/>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
