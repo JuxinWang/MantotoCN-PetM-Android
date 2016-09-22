@@ -10,20 +10,25 @@
     <include layout="@layout/include_main_topbar"/>
 
     <LinearLayout
+        android:id="@+id/service_date"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:gravity="center"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:onClick="onClick"
+        android:clickable="true"
         android:layout_marginTop="15dp"
         android:background="@drawable/edittext_mine_bg">
         <TextView
+            android:id="@+id/weekends"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:layout_marginLeft="5dp"
             android:text="星期一"/>
         <TextView
+            android:id="@+id/service_datetime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="2016年9月21日"
@@ -52,80 +57,112 @@
         android:gravity="center"
         android:background="@color/whiter">
         <TextView
+            android:id="@+id/ten"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:onClick="onClick"
+            android:clickable="true"
             android:textColor="@color/black"
             android:text="10:00"/>
         <TextView
+            android:id="@+id/eleven"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:onClick="onClick"
+            android:clickable="true"
             android:textColor="@color/black"
             android:text="11:00"/>
         <TextView
+            android:id="@+id/twenlve"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:onClick="onClick"
+            android:clickable="true"
             android:textColor="@color/black"
             android:text="12:00"/>
         <TextView
+            android:id="@+id/thirteen"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:onClick="onClick"
+            android:clickable="true"
             android:textColor="@color/black"
             android:text="13:00"/>
         <ImageView
+            android:id="@+id/show_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="15dp"
             android:gravity="center"
+            android:onClick="onClick"
+            android:clickable="true"
             android:layout_weight="1"
             android:src="@drawable/down_arrow"/>
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/service_show_ll"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:gravity="center"
         android:layout_marginTop="1dp"
+        android:visibility="gone"
         android:background="@color/whiter">
         <TextView
+            android:id="@+id/fourteen"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:onClick="onClick"
+            android:clickable="true"
             android:textColor="@color/black"
             android:text="14:00"/>
         <TextView
+            android:id="@+id/fifteen"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:onClick="onClick"
+            android:clickable="true"
             android:textColor="@color/black"
             android:text="15:00"/>
         <TextView
+            android:id="@+id/sixteen"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:onClick="onClick"
+            android:clickable="true"
             android:textColor="@color/black"
             android:text="16:00"/>
         <TextView
+            android:id="@+id/seventeen"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:onClick="onClick"
+            android:clickable="true"
             android:textColor="@color/black"
             android:text="17:00"/>
         <TextView
+            android:id="@+id/eighteen"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:onClick="onClick"
+            android:clickable="true"
             android:textColor="@color/black"
             android:text="18:00"/>
     </LinearLayout>

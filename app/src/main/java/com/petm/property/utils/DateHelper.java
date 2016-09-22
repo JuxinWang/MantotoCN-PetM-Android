@@ -64,4 +64,45 @@ public class DateHelper {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		return format.format(date);
 	}
+
+	//日期转化为字符串
+	public static String getTimes(Date date) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日");
+		return format.format(date);
+	}
+
+	//通过日期获取星期
+	public static String getWeekends(Date date){
+		int y=date.getYear() -1;
+		int m=date.getMonth() + 1;
+		int c=20;
+		int d=date.getDay()+12;
+		int w=(y+(y/4)+(c/4)-2*c+(26*(m+1)/10)+d-1)%7;
+		String week = null;
+		switch(w)
+		{
+			case 0:
+				week="星期日";
+				break;
+			case 1:
+				week="星期一";
+				break;
+			case 2:
+				week="星期二";
+				break;
+			case 3:
+				week="星期三";
+				break;
+			case 4:
+				week="星期四";
+				break;
+			case 5:
+				week="星期五";
+				break;
+			case 6:
+				week="星期六";
+				break;
+		}
+		return week;
+	}
 }

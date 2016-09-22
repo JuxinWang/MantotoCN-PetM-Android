@@ -59,8 +59,14 @@ public class PetshopAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 .showImageOnLoading(R.drawable.icon) //设置图片在下载期间显示的图片
                 .showImageForEmptyUri(R.drawable.icon)//设置图片Uri为空或是错误的时候显示的图片
                 .showImageOnFail(R.drawable.icon)  //设置图片加载/解码过程中错误时候显示的图片
+                .cacheInMemory(true) //加载本地图片不需要再做SD卡缓存，只做内存缓存即可
+                .considerExifParams(true)
                 .build();//构建完成
-        imageLoader.displayImage(petShops.get(position).media.path,((ContentViewHolder)holder).mImg,options);
+        String imgPath = petShops.get(position).media.path;
+        if (!imgPath.equals(((ContentViewHolder) holder).mImg.getTag())){
+            ((ContentViewHolder) holder).mImg.setTag(imgPath);
+            imageLoader.displayImage(petShops.get(position).media.path,((ContentViewHolder)holder).mImg,options);
+        }
         ((ContentViewHolder) holder).mImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

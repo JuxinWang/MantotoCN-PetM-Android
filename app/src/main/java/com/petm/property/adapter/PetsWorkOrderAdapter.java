@@ -56,6 +56,8 @@ public class PetsWorkOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
                 .showImageOnLoading(R.drawable.icon) //设置图片在下载期间显示的图片
                 .showImageForEmptyUri(R.drawable.icon)//设置图片Uri为空或是错误的时候显示的图片
                 .showImageOnFail(R.drawable.icon)  //设置图片加载/解码过程中错误时候显示的图片
+                .cacheInMemory(true) //加载本地图片不需要再做SD卡缓存，只做内存缓存即可
+                .considerExifParams(true)
                 .build();//构建完成
         imageLoader.displayImage(pets.get(position).media.path,((ContentViewHolder)holder).mImg,options);
         ((ContentViewHolder) holder).textView.setOnClickListener(new View.OnClickListener() {

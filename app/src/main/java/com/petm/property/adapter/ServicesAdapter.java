@@ -26,8 +26,14 @@ public class ServicesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private List<PetService> petServices;
     private Context mContext;
     private LayoutInflater mLayoutInflater;
+    private int selectPosition = -1;
     protected ImageLoader imageLoader = ImageLoader.getInstance();
     DisplayImageOptions options;
+    private OnItemClickListener mOnItemClickListener;
+    public void setOnItemClickLitener(OnItemClickListener mOnItemClickLitener)
+    {
+        this.mOnItemClickListener = mOnItemClickLitener;
+    }
     public ServicesAdapter(Context mContext, List<PetService> petServices) {
         this.petServices = petServices;
         this.mContext = mContext;
@@ -43,18 +49,27 @@ public class ServicesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    public void selectPosition(int position){
+        selectPosition = position;
+    }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ContentViewHolder(mLayoutInflater.inflate(R.layout.item_service,parent,false));
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         ((ContentViewHolder) holder).textView.setText(petServices.get(position).petservicename);
+        if (position == selectPosition){
+            ((ContentViewHolder) holder).textView.setBackground(mContext.getResources().getDrawable(R.drawable.pet_service_main_bg));
+        }else {
+            ((ContentViewHolder) holder).textView.setBackground(mContext.getResources().getDrawable(R.drawable.pet_service_bg));
+        }
         ((ContentViewHolder) holder).textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                int pos = holder.getLayoutPosition();
+                mOnItemClickListener.onItemClick(holder.itemView,pos);
             }
         });
     }
@@ -62,5 +77,9 @@ public class ServicesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public int getItemCount() {
         return petServices.size();
+    }
+
+    public interface OnItemClickListener{
+        void onItemClick(View view, int position);
     }
 }

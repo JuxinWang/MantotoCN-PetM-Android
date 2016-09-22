@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.imageaware.ImageAware;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.petm.property.R;
 import com.petm.property.model.Beautician;
 import com.petm.property.model.Pet;
@@ -28,12 +30,21 @@ public class BeauticianAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private LayoutInflater mLayoutInflater;
     protected ImageLoader imageLoader = ImageLoader.getInstance();
     DisplayImageOptions options;
+    OnItemClickLister mOnItemClickListener;
+    private int selectposition = -1;
+    public void setOnItemClickLitener(OnItemClickLister mOnItemClickListener) {
+        this.mOnItemClickListener = mOnItemClickListener;
+    }
+
     public BeauticianAdapter(Context mContext, List<Beautician> beauticians) {
         this.beauticians = beauticians;
         this.mContext = mContext;
         mLayoutInflater = LayoutInflater.from(mContext);
     }
 
+    public void selectPosition(int position){
+        selectposition = position;
+    }
     //内容 ViewHolder
     public static class ContentViewHolder extends RecyclerView.ViewHolder {
         ImageView mImg;
@@ -51,18 +62,35 @@ public class BeauticianAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         ((ContentViewHolder) holder).textView.setText(beauticians.get(position).user.truename);
+        if (selectposition == position){
+            ((ContentViewHolder) holder).textView.setBackgroundColor(mContext.getResources().getColor(R.color.main_color));
+        }else {
+            ((ContentViewHolder) holder).textView.setBackgroundColor(mContext.getResources().getColor(R.color.whiter));
+        }
         options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.icon) //设置图片在下载期间显示的图片
                 .showImageForEmptyUri(R.drawable.icon)//设置图片Uri为空或是错误的时候显示的图片
                 .showImageOnFail(R.drawable.icon)  //设置图片加载/解码过程中错误时候显示的图片
+                .cacheInMemory(true) //加载本地图片不需要再做SD卡缓存，只做内存缓存即可
+                .considerExifParams(true)
                 .build();//构建完成
-        imageLoader.displayImage(beauticians.get(position).user.headshot,((ContentViewHolder)holder).mImg,options);
-        ((ContentViewHolder) holder).textView.setOnClickListener(new View.OnClickListener() {
+        String imgUrl = beauticians.get(position).user.headshot;
+        if (imgUrl==null){
+            imageLoader.displayImage(beauticians.get(position).user.headshot, ((ContentViewHolder) holder).mImg, options);
+        }else {
+            if (!imgUrl.equals(((ContentViewHolder) holder).mImg.getTag())){
+                ((ContentViewHolder) holder).mImg.setTag(imgUrl);
+                ImageAware imageAware = new ImageViewAware(((ContentViewHolder) holder).mImg, false);
+                imageLoader.displayImage(beauticians.get(position).user.headshot,imageAware , options);
+            }
+        }
+        ((ContentViewHolder) holder).mImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                int pos = holder.getLayoutPosition();
+                mOnItemClickListener.OnItemClick(holder.itemView,pos);
             }
         });
     }
@@ -70,5 +98,8 @@ public class BeauticianAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public int getItemCount() {
         return beauticians.size();
+    }
+    public interface OnItemClickLister{
+        void OnItemClick(View view,int position);
     }
 }

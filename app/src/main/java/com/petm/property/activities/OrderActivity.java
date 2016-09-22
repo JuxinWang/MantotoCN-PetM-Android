@@ -2,7 +2,10 @@ package com.petm.property.activities;
 
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.petm.property.R;
@@ -11,15 +14,21 @@ import com.petm.property.adapter.ServicesAdapter;
 import com.petm.property.common.Constant;
 import com.petm.property.model.VOBeautician;
 import com.petm.property.model.VOPetService;
+import com.petm.property.utils.DateHelper;
 import com.petm.property.utils.JsonUtils;
 import com.petm.property.utils.LogU;
 import com.petm.property.utils.ToastU;
 import com.petm.property.views.SpaceItemDecoration;
+import com.petm.property.views.TimePopupWindow;
 import com.petm.property.volley.IRequest;
 import com.petm.property.volley.RequestListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Mr.liu
@@ -30,11 +39,22 @@ import org.json.JSONObject;
 public class OrderActivity extends BaseActivity implements View.OnClickListener{
     private static final String TAG = "OrderActivity";
     private long petshopid;
+    private long petid;
+    private long keeperid;
+    private long beauticianid;
+    private String servicetime;
+    private long serviceid;
+    private JSONArray workorder_array;
     private RecyclerView petServiceRecyclerView,beauticianRecyclerView;
     private GridLayoutManager gridLayoutManger;
     private GridLayoutManager beauticianLayoutManger;
     private ServicesAdapter serviceAdapter;
     private BeauticianAdapter beauticianAdapter;
+    private TimePopupWindow pwTime;
+    private TextView dateTime,week;
+    private LinearLayout mlayout;
+    private boolean showTime = true;
+    private TextView ten,eleven,twelve,thirteen,fourteen,fifteen,sixteen,seventeen,eighteen;
     @Override
     protected int getContentViewResId() {
         return R.layout.activity_order_service;
@@ -49,6 +69,20 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
     protected void initViews() {
         super.initViews();
         petshopid = getIntent().getExtras().getLong("petshopid");
+        workorder_array = new JSONArray();
+        dateTime = (TextView) findViewById(R.id.service_datetime);
+        week = (TextView) findViewById(R.id.weekends);
+        mlayout = (LinearLayout) findViewById(R.id.service_show_ll);
+        mlayout.setVisibility(View.GONE);
+        ten = (TextView) findViewById(R.id.ten);
+        eleven = (TextView) findViewById(R.id.eleven);
+        twelve = (TextView) findViewById(R.id.twenlve);
+        thirteen = (TextView) findViewById(R.id.thirteen);
+        fourteen = (TextView) findViewById(R.id.fourteen);
+        fifteen = (TextView) findViewById(R.id.fifteen);
+        sixteen = (TextView) findViewById(R.id.sixteen);
+        seventeen = (TextView) findViewById(R.id.seventeen);
+        eighteen = (TextView) findViewById(R.id.eighteen);
         petServiceRecyclerView = (RecyclerView) findViewById(R.id.service_recyclerview);
         beauticianRecyclerView = (RecyclerView) findViewById(R.id.beautician);
         gridLayoutManger = new GridLayoutManager(this,3);
@@ -56,6 +90,20 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
         petServiceRecyclerView.setLayoutManager(gridLayoutManger);
         beauticianRecyclerView.setLayoutManager(beauticianLayoutManger);
         loadDatas();
+        //      时间选择器
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        pwTime = new TimePopupWindow(this, TimePopupWindow.Type.YEAR_MONTH_DAY);
+        pwTime.setRange(2000, calendar.get(Calendar.YEAR));
+        //时间选择后回调
+        pwTime.setOnTimeSelectListener(new TimePopupWindow.OnTimeSelectListener() {
+
+            @Override
+            public void onTimeSelect(Date date) {
+                week.setText(DateHelper.getWeekends(date));
+                dateTime.setText(DateHelper.getTimes(date));
+            }
+        });
     }
 
     @Override
@@ -71,10 +119,18 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
             @Override
             public void requestSuccess(JSONObject json) {
                 LogU.i(TAG,json.toString());
-                VOPetService petServices = JsonUtils.object(json.toString(),VOPetService.class);
+                final VOPetService petServices = JsonUtils.object(json.toString(),VOPetService.class);
                 if (petServices.code == 200){
                     serviceAdapter = new ServicesAdapter(OrderActivity.this,petServices.data);
                     petServiceRecyclerView.setAdapter(serviceAdapter);
+                    serviceAdapter.setOnItemClickLitener(new ServicesAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View view, int position) {
+                            serviceid = petServices.data.get(position).petserviceid;
+                            serviceAdapter.selectPosition(position);
+                            serviceAdapter.notifyDataSetChanged();
+                        }
+                    });
                 }else {
                     ToastU.showShort(OrderActivity.this,petServices.desc);
                 }
@@ -96,6 +152,13 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
                     int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.space);
                     beauticianRecyclerView.addItemDecoration(new SpaceItemDecoration(spacingInPixels));
                     beauticianRecyclerView.setAdapter(beauticianAdapter);
+                    beauticianAdapter.setOnItemClickLitener(new BeauticianAdapter.OnItemClickLister() {
+                        @Override
+                        public void OnItemClick(View view, int position) {
+                            beauticianAdapter.selectPosition(position);
+                            beauticianAdapter.notifyDataSetChanged();
+                        }
+                    });
                 }else {
                     ToastU.showShort(OrderActivity.this,beauticians.desc);
                 }
@@ -111,7 +174,78 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-
+            case R.id.save:
+                JSONObject object = new JSONObject();
+                try {
+                    object.put("petshopid",petshopid);
+                    object.put("petid",petid);
+                    object.put("keeperid",keeperid);
+                    object.put("workorder_array",workorder_array);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.service_date:
+                pwTime.showAtLocation(dateTime, Gravity.BOTTOM, 0, 0, new Date());
+                break;
+            case R.id.show_time:
+                if (showTime){
+                    mlayout.setVisibility(View.VISIBLE);
+                    showTime = false;
+                }else {
+                    mlayout.setVisibility(View.GONE);
+                    showTime = true;
+                }
+                break;
+            case R.id.ten:
+                initColor();
+                ten.setTextColor(getResources().getColor(R.color.main_color));
+                break;
+            case R.id.eleven:
+                initColor();
+                eleven.setTextColor(getResources().getColor(R.color.main_color));
+                break;
+            case R.id.twenlve:
+                initColor();
+                twelve.setTextColor(getResources().getColor(R.color.main_color));
+                break;
+            case R.id.thirteen:
+                initColor();
+                thirteen.setTextColor(getResources().getColor(R.color.main_color));
+                break;
+            case R.id.fourteen:
+                initColor();
+                fourteen.setTextColor(getResources().getColor(R.color.main_color));
+                break;
+            case R.id.fifteen:
+                initColor();
+                fifteen.setTextColor(getResources().getColor(R.color.main_color));
+                break;
+            case R.id.sixteen:
+                initColor();
+                sixteen.setTextColor(getResources().getColor(R.color.main_color));
+                break;
+            case R.id.seventeen:
+                initColor();
+                seventeen.setTextColor(getResources().getColor(R.color.main_color));
+                break;
+            case R.id.eighteen:
+                initColor();
+                eighteen.setTextColor(getResources().getColor(R.color.main_color));
+                break;
         }
     }
+
+    private void initColor() {
+        ten.setTextColor(getResources().getColor(R.color.black));
+        eleven.setTextColor(getResources().getColor(R.color.black));
+        twelve.setTextColor(getResources().getColor(R.color.black));
+        thirteen.setTextColor(getResources().getColor(R.color.black));
+        fourteen.setTextColor(getResources().getColor(R.color.black));
+        fifteen.setTextColor(getResources().getColor(R.color.black));
+        sixteen.setTextColor(getResources().getColor(R.color.black));
+        seventeen.setTextColor(getResources().getColor(R.color.black));
+        eighteen.setTextColor(getResources().getColor(R.color.black));
+    }
+
 }
