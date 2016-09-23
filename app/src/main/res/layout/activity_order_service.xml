@@ -2,185 +2,217 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/main_gray_bg"
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
-    android:background="@color/main_gray_bg"
     android:orientation="vertical">
 
-    <include layout="@layout/include_main_topbar"/>
+    <include layout="@layout/include_main_topbar" />
 
-    <LinearLayout
-        android:id="@+id/service_date"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:gravity="center"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:onClick="onClick"
-        android:clickable="true"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/edittext_mine_bg">
-        <TextView
-            android:id="@+id/weekends"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:layout_marginLeft="5dp"
-            android:text="星期一"/>
-        <TextView
-            android:id="@+id/service_datetime"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="2016年9月21日"
-            android:textColor="@color/black"
-            android:gravity="center"
-            android:layout_weight="1"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:src="@drawable/down_arrow"/>
-    </LinearLayout>
+        android:layout_height="wrap_content">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/service_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:overScrollMode="never"
-        android:layout_marginBottom="15dp"
-        android:layout_marginTop="15dp">
-    </android.support.v7.widget.RecyclerView>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:gravity="center"
-        android:background="@color/whiter">
-        <TextView
-            android:id="@+id/ten"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:onClick="onClick"
-            android:clickable="true"
-            android:textColor="@color/black"
-            android:text="10:00"/>
-        <TextView
-            android:id="@+id/eleven"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:onClick="onClick"
-            android:clickable="true"
-            android:textColor="@color/black"
-            android:text="11:00"/>
-        <TextView
-            android:id="@+id/twenlve"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:onClick="onClick"
-            android:clickable="true"
-            android:textColor="@color/black"
-            android:text="12:00"/>
-        <TextView
-            android:id="@+id/thirteen"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:onClick="onClick"
-            android:clickable="true"
-            android:textColor="@color/black"
-            android:text="13:00"/>
-        <ImageView
-            android:id="@+id/show_time"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:padding="15dp"
-            android:gravity="center"
-            android:onClick="onClick"
-            android:clickable="true"
-            android:layout_weight="1"
-            android:src="@drawable/down_arrow"/>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/service_show_ll"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:gravity="center"
-        android:layout_marginTop="1dp"
-        android:visibility="gone"
-        android:background="@color/whiter">
-        <TextView
-            android:id="@+id/fourteen"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:onClick="onClick"
-            android:clickable="true"
-            android:textColor="@color/black"
-            android:text="14:00"/>
-        <TextView
-            android:id="@+id/fifteen"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:onClick="onClick"
-            android:clickable="true"
-            android:textColor="@color/black"
-            android:text="15:00"/>
-        <TextView
-            android:id="@+id/sixteen"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:onClick="onClick"
-            android:clickable="true"
-            android:textColor="@color/black"
-            android:text="16:00"/>
-        <TextView
-            android:id="@+id/seventeen"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:onClick="onClick"
-            android:clickable="true"
-            android:textColor="@color/black"
-            android:text="17:00"/>
-        <TextView
-            android:id="@+id/eighteen"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:onClick="onClick"
-            android:clickable="true"
-            android:textColor="@color/black"
-            android:text="18:00"/>
-    </LinearLayout>
+            android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/beautician"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
-    </android.support.v7.widget.RecyclerView>
-    <Button
-        android:id="@+id/save"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="15dp"
-        android:onClick="onClick"
-        android:clickable="true"
-        android:background="@drawable/commit_circle_bg"
-        android:text="提交"
-        android:textColor="@color/whiter" />
+            <LinearLayout
+                android:id="@+id/service_date"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/edittext_mine_bg"
+                android:clickable="true"
+                android:gravity="center"
+                android:onClick="onClick">
+
+                <TextView
+                    android:id="@+id/weekends"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="星期一"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/service_datetime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="2016年9月21日"
+                    android:textColor="@color/black" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/down_arrow" />
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/service_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="15dp"
+                android:overScrollMode="never"></android.support.v7.widget.RecyclerView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@color/whiter"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/ten"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="10:00"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/eleven"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="11:00"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/twenlve"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="12:00"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/thirteen"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="13:00"
+                    android:textColor="@color/black" />
+
+                <ImageView
+                    android:id="@+id/show_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:padding="15dp"
+                    android:src="@drawable/down_arrow" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/service_show_ll"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="1dp"
+                android:background="@color/whiter"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/fourteen"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="14:00"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/fifteen"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="15:00"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/sixteen"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="16:00"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/seventeen"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="17:00"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/eighteen"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="18:00"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/beautician"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                android:layout_marginTop="20dp"></android.support.v7.widget.RecyclerView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/save"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/commit_circle_bg"
+                    android:clickable="true"
+                    android:onClick="onClick"
+                    android:text="提交"
+                    android:textColor="@color/whiter" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

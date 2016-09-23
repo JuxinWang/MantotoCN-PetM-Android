@@ -12,12 +12,14 @@ import com.petm.property.R;
 import com.petm.property.adapter.BeauticianAdapter;
 import com.petm.property.adapter.ServicesAdapter;
 import com.petm.property.common.Constant;
+import com.petm.property.common.LocalStore;
 import com.petm.property.model.VOBeautician;
 import com.petm.property.model.VOPetService;
 import com.petm.property.utils.DateHelper;
 import com.petm.property.utils.JsonUtils;
 import com.petm.property.utils.LogU;
 import com.petm.property.utils.ToastU;
+import com.petm.property.views.FullyGridLayoutManager;
 import com.petm.property.views.SpaceItemDecoration;
 import com.petm.property.views.TimePopupWindow;
 import com.petm.property.volley.IRequest;
@@ -41,17 +43,18 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
     private long petshopid;
     private long petid;
     private long keeperid;
-    private long beauticianid;
-    private String servicetime;
-    private long serviceid;
+    private long beauticianid = 0;
+    private long servicetime =0;
+    private long serviceid = 0;
     private JSONArray workorder_array;
     private RecyclerView petServiceRecyclerView,beauticianRecyclerView;
-    private GridLayoutManager gridLayoutManger;
-    private GridLayoutManager beauticianLayoutManger;
+    private FullyGridLayoutManager gridLayoutManger;
+    private FullyGridLayoutManager beauticianLayoutManger;
     private ServicesAdapter serviceAdapter;
     private BeauticianAdapter beauticianAdapter;
     private TimePopupWindow pwTime;
     private TextView dateTime,week;
+    private long baseTime;
     private LinearLayout mlayout;
     private boolean showTime = true;
     private TextView ten,eleven,twelve,thirteen,fourteen,fifteen,sixteen,seventeen,eighteen;
@@ -85,14 +88,15 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
         eighteen = (TextView) findViewById(R.id.eighteen);
         petServiceRecyclerView = (RecyclerView) findViewById(R.id.service_recyclerview);
         beauticianRecyclerView = (RecyclerView) findViewById(R.id.beautician);
-        gridLayoutManger = new GridLayoutManager(this,3);
-        beauticianLayoutManger = new GridLayoutManager(this,3);
+        gridLayoutManger = new FullyGridLayoutManager(this,3);
+        beauticianLayoutManger = new FullyGridLayoutManager(this,3);
         petServiceRecyclerView.setLayoutManager(gridLayoutManger);
         beauticianRecyclerView.setLayoutManager(beauticianLayoutManger);
         loadDatas();
         //      时间选择器
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
+        baseTime = System.currentTimeMillis()/1000;
         pwTime = new TimePopupWindow(this, TimePopupWindow.Type.YEAR_MONTH_DAY);
         pwTime.setRange(2000, calendar.get(Calendar.YEAR));
         //时间选择后回调
@@ -102,6 +106,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
             public void onTimeSelect(Date date) {
                 week.setText(DateHelper.getWeekends(date));
                 dateTime.setText(DateHelper.getTimes(date));
+                baseTime = date.getTime()/1000;
+                LogU.i(TAG,""+baseTime);
             }
         });
     }
@@ -146,7 +152,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
             @Override
             public void requestSuccess(JSONObject json) {
                 LogU.i(TAG,json.toString());
-                VOBeautician beauticians = JsonUtils.object(json.toString(),VOBeautician.class);
+                final VOBeautician beauticians = JsonUtils.object(json.toString(),VOBeautician.class);
                 if (beauticians.code == 200){
                     beauticianAdapter = new BeauticianAdapter(OrderActivity.this,beauticians.data);
                     int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.space);
@@ -155,6 +161,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
                     beauticianAdapter.setOnItemClickLitener(new BeauticianAdapter.OnItemClickLister() {
                         @Override
                         public void OnItemClick(View view, int position) {
+                            beauticianid = beauticians.data.get(position).beauticianid;
                             beauticianAdapter.selectPosition(position);
                             beauticianAdapter.notifyDataSetChanged();
                         }
@@ -175,15 +182,43 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.save:
+                if (serviceid == 0){
+                    ToastU.showShort(OrderActivity.this,"请选择服务项");
+                    return;
+                }
+                if (servicetime == 0){
+                    ToastU.showShort(OrderActivity.this,"请选择预约时间");
+                    return;
+                }
+                if (beauticianid == 0){
+                    ToastU.showShort(OrderActivity.this,"请选择美容师");
+                    return;
+                }
+                try {
+                    workorder_array.put(0,beauticianid+"-"+servicetime+"-"+serviceid);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 JSONObject object = new JSONObject();
                 try {
                     object.put("petshopid",petshopid);
                     object.put("petid",petid);
-                    object.put("keeperid",keeperid);
+                    object.put("keeperid", LocalStore.getKeeperid(OrderActivity.this));
                     object.put("workorder_array",workorder_array);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                IRequest.postJson(OrderActivity.this, Constant.PET_WORK_CREATE, object, new RequestListener() {
+                    @Override
+                    public void requestSuccess(JSONObject json) {
+                        LogU.i(TAG,json.toString());
+                    }
+
+                    @Override
+                    public void requestError(VolleyError error) {
+
+                    }
+                });
                 break;
             case R.id.service_date:
                 pwTime.showAtLocation(dateTime, Gravity.BOTTOM, 0, 0, new Date());
@@ -200,38 +235,47 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
             case R.id.ten:
                 initColor();
                 ten.setTextColor(getResources().getColor(R.color.main_color));
+                servicetime = 10*60*60+baseTime;
                 break;
             case R.id.eleven:
                 initColor();
                 eleven.setTextColor(getResources().getColor(R.color.main_color));
+                servicetime = 11*60*60+baseTime;
                 break;
             case R.id.twenlve:
                 initColor();
                 twelve.setTextColor(getResources().getColor(R.color.main_color));
+                servicetime = 12*60*60+baseTime;
                 break;
             case R.id.thirteen:
                 initColor();
                 thirteen.setTextColor(getResources().getColor(R.color.main_color));
+                servicetime = 13*60*60+baseTime;
                 break;
             case R.id.fourteen:
                 initColor();
                 fourteen.setTextColor(getResources().getColor(R.color.main_color));
+                servicetime = 14*60*60+baseTime;
                 break;
             case R.id.fifteen:
                 initColor();
                 fifteen.setTextColor(getResources().getColor(R.color.main_color));
+                servicetime = 15*60*60+baseTime;
                 break;
             case R.id.sixteen:
                 initColor();
                 sixteen.setTextColor(getResources().getColor(R.color.main_color));
+                servicetime = 16*60*60+baseTime;
                 break;
             case R.id.seventeen:
                 initColor();
                 seventeen.setTextColor(getResources().getColor(R.color.main_color));
+                servicetime = 17*60*60+baseTime;
                 break;
             case R.id.eighteen:
                 initColor();
                 eighteen.setTextColor(getResources().getColor(R.color.main_color));
+                servicetime = 18*60*60+baseTime;
                 break;
         }
     }

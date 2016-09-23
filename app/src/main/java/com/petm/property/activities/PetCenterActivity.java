@@ -1,6 +1,7 @@
 package com.petm.property.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -8,10 +9,13 @@ import android.view.View;
 
 import com.android.volley.VolleyError;
 import com.petm.property.R;
+import com.petm.property.adapter.PetVaccinesAdapter;
 import com.petm.property.adapter.PetsAdapter;
 import com.petm.property.common.Constant;
 import com.petm.property.common.LocalStore;
+import com.petm.property.dialog.ColorDialog;
 import com.petm.property.fragments.LoadingFragment;
+import com.petm.property.model.NetInfo;
 import com.petm.property.model.VOPet;
 import com.petm.property.model.VOPetShop;
 import com.petm.property.utils.JsonUtils;
@@ -29,7 +33,7 @@ import org.json.JSONObject;
  * At 10:05
  * PetM
  */
-public class PetCenterActivity extends BaseActivity implements View.OnClickListener {
+public class PetCenterActivity extends BaseActivity implements View.OnClickListener,PetsAdapter.OnDeletePetListener{
     private static final String TAG = "PetCenterActivity";
     private RecyclerView petsRecycler;
     private LinearLayoutManager layoutManager;
@@ -86,6 +90,12 @@ public class PetCenterActivity extends BaseActivity implements View.OnClickListe
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        loadDatas();
+    }
+
+    @Override
     protected void loadDatas() {
         super.loadDatas();
         JSONObject object = new JSONObject();
@@ -102,10 +112,17 @@ public class PetCenterActivity extends BaseActivity implements View.OnClickListe
                 LogU.i(TAG, json.toString());
                 VOPet pets = JsonUtils.object(json.toString(), VOPet.class);
                 if (pets.code == 200) {
-                    mAdapter = new PetsAdapter(PetCenterActivity.this,pets.data);
+                    mAdapter = new PetsAdapter(PetCenterActivity.this, pets.data, flag);
                     petsRecycler.setAdapter(mAdapter);
-                }else {
-                    ToastU.showShort(getApplicationContext(),pets.desc);
+                    mAdapter.setmOnItemClickListener(new PetsAdapter.OnItemClickListener() {
+                        @Override
+                        public void OnItemClick(View view, int position) {
+                            mAdapter.selectPosition(position);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+                } else {
+                    ToastU.showShort(getApplicationContext(), pets.desc);
                 }
             }
 
@@ -134,4 +151,55 @@ public class PetCenterActivity extends BaseActivity implements View.OnClickListe
                 break;
         }
     }
+
+    @Override
+    public void OnDeletePet(final long petid) {
+        ColorDialog dialog = new ColorDialog(PetCenterActivity.this);
+        dialog.setTitle("删除宠物");
+        dialog.setTitleTextColor(Color.BLACK);
+        dialog.setContentText("您确定删除该宠物么？")
+                .setColor(getResources().getColor(R.color.main_color))
+                .setContentTextColor(getResources().getColor(R.color.black))
+                .setPositiveListener("确定", new ColorDialog.OnPositiveListener() {
+                    @Override
+                    public void onClick(ColorDialog dialog) {
+                        fragment = new LoadingFragment();
+                        fragment.show(getSupportFragmentManager(), "Loading");
+                        JSONObject object = new JSONObject();
+                        try {
+                            object.put("petid", petid);
+                            object.put("isvalid", false);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        IRequest.postJson(PetCenterActivity.this, Constant.PET_DELETE, object, new RequestListener() {
+                            @Override
+                            public void requestSuccess(JSONObject json) {
+                                NetInfo netInfo = JsonUtils.object(json.toString(), NetInfo.class);
+                                if (netInfo.code == 200) {
+                                    fragment.dismiss();
+                                    ToastU.showShort(PetCenterActivity.this, "删除成功");
+                                    loadDatas();
+                                } else {
+                                    fragment.dismiss();
+                                    ToastU.showShort(PetCenterActivity.this, netInfo.desc);
+                                }
+                            }
+
+                            @Override
+                            public void requestError(VolleyError error) {
+                                fragment.dismiss();
+                                ToastU.showShort(PetCenterActivity.this, error.getMessage());
+                            }
+                        });
+                        dialog.dismiss();
+                    }
+                }).setNegativeListener("取消", new ColorDialog.OnNegativeListener() {
+            @Override
+            public void onClick(ColorDialog dialog) {
+                dialog.dismiss();
+            }
+        }).show();
+    }
+
 }

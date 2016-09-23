@@ -63,7 +63,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -273,7 +272,8 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
                 pwOptions.showAtLocation(petCategory, Gravity.BOTTOM, 0, 0);
                 break;
             case R.id.save:
-                uploadFile(SelectHeadTools.uriPath,false);
+//                uploadFile(SelectHeadTools.uriPath,false);
+                addPetRequest();
                 break;
         }
     }

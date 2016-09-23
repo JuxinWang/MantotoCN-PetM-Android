@@ -10,7 +10,6 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp">
-
         <com.petm.property.views.RoundImageView
             android:id="@+id/petImg"
             android:layout_width="match_parent"
@@ -18,6 +17,15 @@
             custom:borderRadius="10dp"
             custom:type="round"
             android:src="@drawable/add_pet_bg" />
+        <ImageView
+            android:id="@+id/delete_pet"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="right"
+            android:scaleType="centerInside"
+            android:src="@drawable/delete"/>
         <TextView
             android:id="@+id/petName"
             android:layout_width="match_parent"

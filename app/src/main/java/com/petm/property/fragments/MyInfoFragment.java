@@ -9,10 +9,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.android.volley.VolleyError;
 import com.petm.property.R;
+import com.petm.property.common.Constant;
+import com.petm.property.common.LocalStore;
+import com.petm.property.utils.LogU;
 import com.petm.property.utils.ToastU;
 import com.petm.property.views.OptionsPopupWindow;
 import com.petm.property.views.TimePopupWindow;
+import com.petm.property.volley.IRequest;
+import com.petm.property.volley.RequestListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,6 +35,7 @@ import java.util.Date;
  * PetM
  */
 public class MyInfoFragment extends BaseFragment implements View.OnClickListener{
+    private static final String TAG = "MyInfoFragment";
     /**
      * 日期和性别选择
      */
@@ -38,6 +48,28 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return mView = inflater.inflate(R.layout.fragment_mine,null);
+    }
+
+    @Override
+    protected void onLoadData() {
+        super.onLoadData();
+        JSONObject object = new JSONObject();
+        try {
+            object.put("userid", LocalStore.getKeeperid(mContext));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        IRequest.postJson(mContext, Constant.USERINFO_GET, object, new RequestListener() {
+            @Override
+            public void requestSuccess(JSONObject json) {
+                LogU.i(TAG,json.toString());
+            }
+
+            @Override
+            public void requestError(VolleyError error) {
+
+            }
+        });
     }
 
     @Override

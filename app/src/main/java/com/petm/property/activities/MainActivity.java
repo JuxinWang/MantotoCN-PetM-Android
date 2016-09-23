@@ -144,7 +144,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 startActivity(intent);
                 break;
             case R.id.add_petshop_two:
-                intent.setClass(MainActivity.this, RegisterActivity.class);
+                intent.setClass(MainActivity.this, AddPetshopActivity.class);
                 startActivity(intent);
                 break;
             case R.id.petcenter:
