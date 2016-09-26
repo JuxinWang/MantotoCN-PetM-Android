@@ -6,11 +6,13 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="110dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp">
 
             <FrameLayout
                 android:layout_width="100dp"
@@ -36,12 +38,13 @@
             </FrameLayout>
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/work_linear"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <android.support.v7.widget.RecyclerView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-            </android.support.v7.widget.RecyclerView>
+            android:layout_height="100dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

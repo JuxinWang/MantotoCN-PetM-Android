@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_marginTop="10dp"
+        android:background="@color/main_bg"
         android:orientation="vertical">
         <com.petm.property.views.RoundImageView
             android:id="@+id/head_img"
@@ -30,6 +31,7 @@
             android:id="@+id/count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:text="0000000000"/>
     </LinearLayout>
     <include layout="@layout/include_person_tab"/>

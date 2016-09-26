@@ -41,6 +41,9 @@ public class PetCenterActivity extends BaseActivity implements View.OnClickListe
     private PetsAdapter mAdapter;
     private String flag = "";
     private long petshopid;
+    private long petid;
+    private VOPet pets;
+    private boolean selected = false;
     @Override
     protected int getContentViewResId() {
         return R.layout.actvity_pet_center;
@@ -110,7 +113,7 @@ public class PetCenterActivity extends BaseActivity implements View.OnClickListe
                 fragment.dismiss();
 //                ToastU.showShort(PetCenterActivity.this, json.toString());
                 LogU.i(TAG, json.toString());
-                VOPet pets = JsonUtils.object(json.toString(), VOPet.class);
+                pets = JsonUtils.object(json.toString(), VOPet.class);
                 if (pets.code == 200) {
                     mAdapter = new PetsAdapter(PetCenterActivity.this, pets.data, flag);
                     petsRecycler.setAdapter(mAdapter);
@@ -119,6 +122,8 @@ public class PetCenterActivity extends BaseActivity implements View.OnClickListe
                         public void OnItemClick(View view, int position) {
                             mAdapter.selectPosition(position);
                             mAdapter.notifyDataSetChanged();
+                            petid = pets.data.get(position).petid;
+                            selected = true;
                         }
                     });
                 } else {
@@ -141,12 +146,17 @@ public class PetCenterActivity extends BaseActivity implements View.OnClickListe
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         switch (v.getId()){
             case R.id.top_bar_right_img:
-                intent.setClass(PetCenterActivity.this,AddPetActivity.class);
+                intent.setClass(PetCenterActivity.this, AddPetActivity.class);
                 startActivity(intent);
                 break;
             case R.id.top_bar_right_text:
+                if (!selected){
+                    ToastU.showShort(PetCenterActivity.this,"请选择宠物");
+                    return;
+                }
                 intent.setClass(PetCenterActivity.this,OrderActivity.class);
                 intent.putExtra("petshopid",petshopid);
+                intent.putExtra("petid",petid);
                 startActivity(intent);
                 break;
         }
@@ -201,5 +211,4 @@ public class PetCenterActivity extends BaseActivity implements View.OnClickListe
             }
         }).show();
     }
-
 }

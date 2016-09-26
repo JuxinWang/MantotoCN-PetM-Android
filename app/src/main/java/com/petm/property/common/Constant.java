@@ -81,6 +81,10 @@ public class Constant {
      */
     public static final String REMIND_GET_ALL =URL+ "/ReminderGetAll";
     /**
+     *
+     */
+    public static final String REMIND_GET_PET_ALL = URL +"/ReminderGetPetAll";
+    /**
      * 获取用户个人信息
      */
     public static final String USERINFO_GET =URL+ "/UserInfoGet/";

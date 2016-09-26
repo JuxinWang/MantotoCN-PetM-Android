@@ -118,6 +118,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 if (userInfo.code == 200){
                     Log.i(TAG,""+userInfo.data.user.username);
                     LocalStore.setKeeperid(RegisterActivity.this, userInfo.data.keeperid);
+                    LocalStore.setMobile(RegisterActivity.this, userInfo.data.user.mobile);
+                    LocalStore.setUserid(RegisterActivity.this,userInfo.data.userid);
                     Intent intent = new Intent();
                     intent.setClass(RegisterActivity.this,MainActivity.class);
                     startActivity(intent);

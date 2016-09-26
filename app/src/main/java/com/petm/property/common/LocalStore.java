@@ -74,4 +74,44 @@ public class LocalStore {
         return saving.getLong(KEEPERID, 0);
     }
 
+    /**
+     * 存储用户keeperid
+     * @param context
+     * @param userid
+     */
+    public static void setUserid(Context context, long userid){
+        SharedPreferences saving = context.getSharedPreferences(USER_INFO, 0);
+        saving.edit().putLong(USER_ID, userid).commit();
+    }
+
+    /**
+     * 获取用户keeperid
+     * @param context
+     * @return
+     */
+    public static long getUserid(Context context){
+        SharedPreferences saving = context.getSharedPreferences(USER_INFO, 0);
+        return saving.getLong(USER_ID, 0);
+    }
+
+    /**
+     * 存储用户mobile
+     * @param context
+     * @param mobile
+     */
+    public static void setMobile(Context context, String mobile){
+        SharedPreferences saving = context.getSharedPreferences(USER_INFO, 0);
+        saving.edit().putString(USER_MOBILE, mobile).commit();
+    }
+
+    /**
+     * 获取用户mobile
+     * @param context
+     * @return
+     */
+    public static String getMobile(Context context){
+        SharedPreferences saving = context.getSharedPreferences(USER_INFO, 0);
+        return saving.getString(USER_MOBILE, "");
+    }
+
 }

@@ -18,6 +18,7 @@ import com.petm.property.common.LocalStore;
 import com.petm.property.fragments.LoadingFragment;
 import com.petm.property.model.VOPet;
 import com.petm.property.model.VOPetShop;
+import com.petm.property.model.VOPetWorkOrder;
 import com.petm.property.utils.JsonUtils;
 import com.petm.property.utils.LogU;
 import com.petm.property.utils.ToastU;
@@ -116,10 +117,35 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 fragment.dismiss();
 //                ToastU.showShort(PetCenterActivity.this, json.toString());
                 LogU.i(TAG, json.toString());
-                VOPet pets = JsonUtils.object(json.toString(), VOPet.class);
+                final VOPet pets = JsonUtils.object(json.toString(), VOPet.class);
                 if (pets.code == 200) {
-                    petsAdapter = new PetsWorkOrderAdapter(MainActivity.this,pets.data);
-                    petsRecycler.setAdapter(petsAdapter);
+                    JSONObject obj = new JSONObject();
+                    try {
+                        obj.put("keeperid",LocalStore.getKeeperid(MainActivity.this));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    IRequest.postJson(MainActivity.this, Constant.REMIND_WORKO_ORDER_GET_BY_KEEPER, obj, new RequestListener() {
+                        @Override
+                        public void requestSuccess(JSONObject json) {
+                            LogU.i(TAG,json.toString());
+                            VOPetWorkOrder workOrders = JsonUtils.object(json.toString(),VOPetWorkOrder.class);
+                            if (workOrders.code == 200){
+                                petsAdapter = new PetsWorkOrderAdapter(MainActivity.this, pets.data ,workOrders.data);
+                                petsRecycler.setAdapter(petsAdapter);
+                            }else if(workOrders.code == 201) {
+                                petsAdapter = new PetsWorkOrderAdapter(MainActivity.this, pets.data ,workOrders.data);
+                                petsRecycler.setAdapter(petsAdapter);
+                            }else {
+                                ToastU.showShort(MainActivity.this,workOrders.desc);
+                            }
+                        }
+
+                        @Override
+                        public void requestError(VolleyError error) {
+                            ToastU.showShort(MainActivity.this,error.getMessage());
+                        }
+                    });
                 }else {
                     ToastU.showShort(getApplicationContext(),pets.desc);
                 }

@@ -1,17 +1,21 @@
 package com.petm.property.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.petm.property.R;
 import com.petm.property.model.Pet;
+import com.petm.property.model.PetWorkOrder;
+import com.petm.property.utils.DateHelper;
 
 import java.util.List;
 
@@ -23,12 +27,14 @@ import java.util.List;
  */
 public class PetsWorkOrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Pet> pets;
+    private List<PetWorkOrder>workOrders;
     private Context mContext;
     private LayoutInflater mLayoutInflater;
     protected ImageLoader imageLoader = ImageLoader.getInstance();
     DisplayImageOptions options;
-    public PetsWorkOrderAdapter(Context mContext, List<Pet> pets) {
+    public PetsWorkOrderAdapter(Context mContext, List<Pet> pets ,List<PetWorkOrder>workOrders) {
         this.pets = pets;
+        this.workOrders = workOrders;
         this.mContext = mContext;
         mLayoutInflater = LayoutInflater.from(mContext);
     }
@@ -37,10 +43,12 @@ public class PetsWorkOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
     public static class ContentViewHolder extends RecyclerView.ViewHolder {
         ImageView mImg;
         TextView textView;
+        LinearLayout workLL;
         public ContentViewHolder(View itemView) {
             super(itemView);
             mImg = (ImageView) itemView.findViewById(R.id.petImg);
             textView = (TextView) itemView.findViewById(R.id.petName);
+            workLL = (LinearLayout) itemView.findViewById(R.id.work_linear);
         }
     }
 
@@ -60,6 +68,14 @@ public class PetsWorkOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
                 .considerExifParams(true)
                 .build();//构建完成
         String imgPath = pets.get(position).media.path;
+        for (int i = 0;i< workOrders.size();i++){
+            if (pets.get(position).petid == workOrders.get(i).petid) {
+                TextView mTv = new TextView(mContext);
+                mTv.setText("上次"+workOrders.get(i).petService.petservicename+"的时间为"+ DateHelper.getStringTime(workOrders.get(i).btime,"yyyy.MM.dd")+"日。");
+                mTv.setSingleLine();
+                ((ContentViewHolder) holder).workLL.addView(mTv);
+            }
+        }
         if (!imgPath.equals(((ContentViewHolder) holder).mImg.getTag())){
             ((ContentViewHolder) holder).mImg.setTag(imgPath);
             imageLoader.displayImage(pets.get(position).media.path,((ContentViewHolder)holder).mImg,options);

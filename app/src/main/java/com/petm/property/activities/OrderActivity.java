@@ -1,5 +1,6 @@
 package com.petm.property.activities;
 
+import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -13,6 +14,8 @@ import com.petm.property.adapter.BeauticianAdapter;
 import com.petm.property.adapter.ServicesAdapter;
 import com.petm.property.common.Constant;
 import com.petm.property.common.LocalStore;
+import com.petm.property.dialog.PromptDialog;
+import com.petm.property.fragments.LoadingFragment;
 import com.petm.property.model.VOBeautician;
 import com.petm.property.model.VOPetService;
 import com.petm.property.utils.DateHelper;
@@ -58,6 +61,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
     private LinearLayout mlayout;
     private boolean showTime = true;
     private TextView ten,eleven,twelve,thirteen,fourteen,fifteen,sixteen,seventeen,eighteen;
+    private LoadingFragment fragment;
     @Override
     protected int getContentViewResId() {
         return R.layout.activity_order_service;
@@ -71,7 +75,9 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
     @Override
     protected void initViews() {
         super.initViews();
+        fragment = new LoadingFragment();
         petshopid = getIntent().getExtras().getLong("petshopid");
+        petid = getIntent().getExtras().getLong("petid");
         workorder_array = new JSONArray();
         dateTime = (TextView) findViewById(R.id.service_datetime);
         week = (TextView) findViewById(R.id.weekends);
@@ -194,6 +200,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
                     ToastU.showShort(OrderActivity.this,"请选择美容师");
                     return;
                 }
+                fragment.show(getSupportFragmentManager(), "Loading");
                 try {
                     workorder_array.put(0,beauticianid+"-"+servicetime+"-"+serviceid);
                 } catch (JSONException e) {
@@ -212,11 +219,30 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
                     @Override
                     public void requestSuccess(JSONObject json) {
                         LogU.i(TAG,json.toString());
+                        fragment.dismiss();
+                        new PromptDialog(OrderActivity.this)
+                                .setDialogType(PromptDialog.DIALOG_TYPE_SUCCESS)
+                                .setAnimationEnable(true)
+                                .setTitleText("预约成功")
+                                .setContentText("您成功为皮皮预约2016年9月26日的洗澡服务请您按时到宠物店！")
+                                .setPositiveListener("确定", new PromptDialog.OnPositiveListener() {
+                                    @Override
+                                    public void onClick(PromptDialog dialog) {
+                                        Intent intent =  new Intent();
+                                        intent.setClass(OrderActivity.this,MainActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+                                                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(intent);
+                                        finish();
+                                        dialog.dismiss();
+                                    }
+                                }).show();
                     }
 
                     @Override
                     public void requestError(VolleyError error) {
-
+                        fragment.dismiss();
+                        ToastU.showShort(OrderActivity.this,error.getMessage());
                     }
                 });
                 break;

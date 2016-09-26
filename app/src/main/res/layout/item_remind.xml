@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/main_bg"
+    android:orientation="vertical">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/remind_date"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center|bottom"
+        android:background="@color/main_bg"
+        android:text="2016-09-26 10:00"/>
+    <TextView
+        android:id="@+id/remind_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:padding="5dp"
+        android:paddingBottom="10dp"
+        android:lineSpacingExtra="5dp"
+        android:background="@color/whiter"
+        android:text="您的宠物皮皮在宝贝宠物店（三里屯店）预约的2016年10月1日的洗澡，还差三十分钟就要到时，请及时将皮皮送达店铺，谢谢！"/>
+</LinearLayout>
+</LinearLayout>

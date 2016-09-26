@@ -4,8 +4,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="消费信息"/>
+        android:id="@+id/no_consume"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="暂无消费信息"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/consume_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

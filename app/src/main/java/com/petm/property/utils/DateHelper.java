@@ -8,10 +8,15 @@ import java.util.GregorianCalendar;
 public class DateHelper {
 
 	public static String getStringTime(String timeNum) {
-		Long timestamp = Long.parseLong(timeNum) * 1000;
-		String date = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date(timestamp));
+		Long timestamp = Long.parseLong(timeNum);
+		String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(timestamp));
 		return date;
+	}
 
+	public static String getStringTime(String timeNum,String formate) {
+		Long timestamp = Long.parseLong(timeNum);
+		String date = new SimpleDateFormat(formate).format(new Date(timestamp));
+		return date;
 	}
 
 	public static Date getUnixTime(String timeNum) {

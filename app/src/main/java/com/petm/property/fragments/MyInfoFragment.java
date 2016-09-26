@@ -13,6 +13,7 @@ import com.android.volley.VolleyError;
 import com.petm.property.R;
 import com.petm.property.common.Constant;
 import com.petm.property.common.LocalStore;
+import com.petm.property.utils.DateHelper;
 import com.petm.property.utils.LogU;
 import com.petm.property.utils.ToastU;
 import com.petm.property.views.OptionsPopupWindow;
@@ -53,37 +54,25 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
     @Override
     protected void onLoadData() {
         super.onLoadData();
-        JSONObject object = new JSONObject();
-        try {
-            object.put("userid", LocalStore.getKeeperid(mContext));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        IRequest.postJson(mContext, Constant.USERINFO_GET, object, new RequestListener() {
-            @Override
-            public void requestSuccess(JSONObject json) {
-                LogU.i(TAG,json.toString());
-            }
 
-            @Override
-            public void requestError(VolleyError error) {
-
-            }
-        });
     }
 
     @Override
     protected void initViews() {
         super.initViews();
+        Bundle bundle = MyInfoFragment.this.getArguments();
         personName = (EditText) mView.findViewById(R.id.person_name);
         personBirth = (EditText) mView.findViewById(R.id.person_birthday);
         personSex = (EditText) mView.findViewById(R.id.person_sex);
+        personName.setText(bundle.getString("truename"));
+        personSex.setText(bundle.getString("gender").equals("MAN")?"男":"女");
+        personBirth.setText(DateHelper.getStringTime(bundle.getString("birthday")));
         save = (Button) mView.findViewById(R.id.save);
         //      时间选择器
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         pwTime = new TimePopupWindow(getActivity(), TimePopupWindow.Type.YEAR_MONTH_DAY);
-        pwTime.setRange(1900,calendar.get(Calendar.YEAR));
+        pwTime.setRange(1900, calendar.get(Calendar.YEAR));
         //时间选择后回调
         pwTime.setOnTimeSelectListener(new TimePopupWindow.OnTimeSelectListener() {
 
@@ -108,6 +97,7 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
         save.setOnClickListener(this);
         personBirth.setOnClickListener(this);
         personSex.setOnClickListener(this);
+        onLoadData();
     }
     public static String getTime(Date date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");

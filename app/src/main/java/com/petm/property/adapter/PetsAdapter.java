@@ -1,6 +1,7 @@
 package com.petm.property.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.petm.property.R;
+import com.petm.property.activities.PetInfoActivity;
 import com.petm.property.model.Pet;
 import com.petm.property.utils.ToastU;
 
@@ -79,6 +81,15 @@ public class PetsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     mOnItemClickListener.OnItemClick(holder.itemView,holder.getLayoutPosition());
+                }
+            });
+        }else {
+            ((ContentViewHolder) holder).mImg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.setClass(mContext, PetInfoActivity.class);
+                    mContext.startActivity(intent);
                 }
             });
         }
