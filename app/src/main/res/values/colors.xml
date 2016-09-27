@@ -37,4 +37,10 @@
     <color name="color_type_wrong">#ed7861</color>
     <color name="color_type_warning">#e8bd4b</color>
     <color name="color_type_success">#FFDE03</color>
+
+    <!--圆形进度条-->
+    <color name="header_bg_common">#323a45</color>
+    <color name="title_txt_color">#f1f1f3</color>
+    <color name="circle_color">#FFFFFF</color>
+    <color name="ring_color">#FFDE03</color>
 </resources>

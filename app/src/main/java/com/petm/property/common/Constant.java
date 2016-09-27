@@ -1,5 +1,9 @@
 package com.petm.property.common;
 
+import android.os.Environment;
+
+import java.io.File;
+
 /**
  * Created by Mr.liu
  * On 2016/7/13
@@ -29,7 +33,9 @@ public class Constant {
      * 返回处理后的图片
      */
     public static final int PHOTO_REQUEST_CUT = 3;// 结果
-
+    public static final String IMAGE_FILE_NAME = "image.jpg";
+    public static final File PHOTO_DIR = new File(
+            Environment.getExternalStorageDirectory() + "/petm/Camera");
 
     public static final String RSA_PUBLIC_KEY ="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDRsvj8cEaWr1pdG7+NUjaOIeHM\n" +
             "+v07kK9/g5JlcNXDKfMSn/xTQ7bpJ0l0yprsjaGeM+RImK/PTMzzRXHO+qsetJkO\n" +

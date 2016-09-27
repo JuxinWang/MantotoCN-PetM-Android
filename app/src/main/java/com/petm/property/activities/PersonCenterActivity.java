@@ -5,18 +5,30 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.sdk.android.media.Constants;
+import com.alibaba.sdk.android.media.upload.UploadListener;
+import com.alibaba.sdk.android.media.upload.UploadOptions;
+import com.alibaba.sdk.android.media.upload.UploadTask;
+import com.alibaba.sdk.android.media.utils.BitmapUtils;
+import com.alibaba.sdk.android.media.utils.FailReason;
+import com.alibaba.sdk.android.media.utils.StringUtils;
 import com.android.volley.VolleyError;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.petm.property.PetMApplication;
 import com.petm.property.R;
 import com.petm.property.common.Constant;
 import com.petm.property.common.LocalStore;
@@ -26,6 +38,8 @@ import com.petm.property.fragments.MyInfoFragment;
 import com.petm.property.fragments.OrderInfoFragment;
 import com.petm.property.model.InfoUser;
 import com.petm.property.model.VOUser;
+import com.petm.property.utils.AliUtils;
+import com.petm.property.utils.DateHelper;
 import com.petm.property.utils.FileUtils;
 import com.petm.property.utils.JsonUtils;
 import com.petm.property.utils.LogU;
@@ -39,6 +53,7 @@ import com.petm.property.volley.RequestListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -66,6 +81,11 @@ public class PersonCenterActivity extends BaseActivity implements View.OnClickLi
     private VOUser infoUser;
     private Bundle bundle;
     private LoadingFragment frament;
+    private String photoPath = "";
+    public UploadListener mListener;
+    public String mTaskId;
+    private String path = "path";
+    private MyInfoFragment myInfoFragment;
     @Override
     protected int getContentViewResId() {
         return R.layout.activity_person_center;
@@ -97,10 +117,44 @@ public class PersonCenterActivity extends BaseActivity implements View.OnClickLi
         fragments = new ArrayList<>();
         loadDatas();
         changeState(0);
+        mListener = new UploadListener() {
+            @Override
+            public void onUploading(UploadTask uploadTask) {
+                LogU.i(TAG, uploadTask.getCurrent() + "/" + uploadTask.getTotal());
+                ToastU.showShort(PersonCenterActivity.this, "" + uploadTask.getCurrent());
+            }
+
+            @Override
+            public void onUploadFailed(UploadTask uploadTask, FailReason failReason) {
+                UploadTask.Result result = uploadTask.getResult();
+                String requestId = (null == result ? "null" : result.requestId);
+                Log.e(TAG, "###########onUploadFailed:" + requestId);
+                ToastU.showShort(PersonCenterActivity.this, "" + requestId);
+            }
+
+            @Override
+            public void onUploadComplete(UploadTask uploadTask) {
+                UploadTask.Result res = uploadTask.getResult();            //上传成功后，从服务端返回的结果都在这个对象中，根据自己需要获取
+                Log.e(TAG, "###########onUploadComplete:" + uploadTask.getResult().requestId);
+                path = res.url;
+                if (path.equals("")) {
+                    path = "http://img0.bdstatic.com/img/image/zhengjiuwxr.jpg";
+                }
+                bundle.putString("path",path);
+                fragments.clear();
+                loadFragments();
+                mViewPage.setCurrentItem(0);
+            }
+
+            @Override
+            public void onUploadCancelled(UploadTask uploadTask) {
+                ToastU.showShort(PersonCenterActivity.this, "上传失败");
+            }
+        };
     }
 
     private void loadFragments() {
-        MyInfoFragment myInfoFragment = new MyInfoFragment();
+        myInfoFragment = new MyInfoFragment();
         myInfoFragment.setArguments(bundle);
         fragments.add(myInfoFragment);
         fragments.add(new ConsumeInfoFragment());
@@ -163,8 +217,9 @@ public class PersonCenterActivity extends BaseActivity implements View.OnClickLi
                     count.setText(infoUser.data.username);
                     bundle = new Bundle();
                     bundle.putString("truename", infoUser.data.truename);
-                    bundle.putString("gender",infoUser.data.gender);
-                    bundle.putString("birthday",infoUser.data.birthday);
+                    bundle.putString("gender", infoUser.data.gender);
+                    bundle.putString("birthday", infoUser.data.birthday);
+                    bundle.putString("path",path);
                     loadFragments();
                 } else {
                     frament.dismiss();
@@ -259,24 +314,66 @@ public class PersonCenterActivity extends BaseActivity implements View.OnClickLi
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case Constant.PHOTO_REQUEST_TAKEPHOTO: // 拍照
-                SelectHeadTools.startPhotoZoom(this, photoUri, 600);
+                // 判断存储卡是否可以用，可用进行存储
+                String state = Environment.getExternalStorageState();
+                if (state.equals(Environment.MEDIA_MOUNTED)) {
+                    File path = Environment
+                            .getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+                    File tempFile = new File(path, Constant.IMAGE_FILE_NAME);
+                    SelectHeadTools.startPhotoZoom(this, Uri.fromFile(tempFile), 300);
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "未找到存储卡，无法存储照片！", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case Constant.PHOTO_REQUEST_GALLERY://相册获取
                 if (data == null)
                     return;
-                SelectHeadTools.startPhotoZoom(this, data.getData(), 600);
+                SelectHeadTools.startPhotoZoom(this, data.getData(), 300);
                 break;
             case Constant.PHOTO_REQUEST_CUT:  //接收处理返回的图片结果
-                if (data == null)
-                    return;
-                try {
-                    Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(SelectHeadTools.path));
+                Bundle extras = data.getExtras();
+                if (extras != null) {
+                    Bitmap photo = extras.getParcelable("data");
+                    String photoName = SelectHeadTools.getPhotoFileName();
+                    photoPath = SelectHeadTools.storeImageToFile(photo, photoName);
+                    Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
                     headImg.setImageBitmap(bitmap);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                        uploadFile(photoPath, false);
                 }
                 break;
         }
     }
 
+    public void uploadFile(final String paths, boolean compress) {
+        if (TextUtils.isEmpty(paths)) {
+            ToastU.showShort(PersonCenterActivity.this, "您还未给您的宠物设置头像");
+            return;
+        }
+        final String fileName = "petm_" + StringUtils.getUUID();
+        final String tempFile = DateHelper.getStringTime("" + System.currentTimeMillis(), "yyyyMMdd");
+        final File file = new File(paths);
+        final UploadOptions options = new UploadOptions.Builder()
+                .tag(String.valueOf(SystemClock.elapsedRealtime()))
+                .dir("/Headshot/Images/" + tempFile)
+                .aliases(fileName).build();
+        if (!compress) {
+            mTaskId = PetMApplication.mediaService.upload(file, PetMApplication.NAMESPACE, options, mListener);
+        } else {
+            AliUtils.SERVICE.submit(new Runnable() {
+                @Override
+                public void run() {
+                    byte[] data = BitmapUtils.getSmallBitmapBytes(paths, 200, 200, 80);
+                    if (data != null) {
+                        Log.e(TAG, "compress  olderSize:" + file.length()
+                                / Constants.KB + " kb" + "    newSize:"
+                                + data.length / Constants.KB + "  kb");
+                        mTaskId = PetMApplication.mediaService.upload(data, fileName, PetMApplication.NAMESPACE, options, mListener);
+                    } else {
+                        Log.e(TAG, "getSmallBitmapBytes  fail");
+                    }
+                }
+            });
+        }
+    }
 }

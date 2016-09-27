@@ -68,7 +68,7 @@ public class PetsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         ((ContentViewHolder) holder).textView.setText(pets.get(position).petname);
         if (selectPosition == position){
             ((ContentViewHolder) holder).textView.setBackground(mContext.getResources().getDrawable(R.drawable.pet_name_main_bg));
@@ -89,6 +89,11 @@ public class PetsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 public void onClick(View v) {
                     Intent intent = new Intent();
                     intent.setClass(mContext, PetInfoActivity.class);
+                    intent.putExtra("petid",pets.get(position).petid);
+                    intent.putExtra("petname",pets.get(position).petname);
+                    intent.putExtra("imgpath",pets.get(position).media.path);
+                    intent.putExtra("categoryname",pets.get(position).category.petcategoryname);
+                    intent.putExtra("birthday",pets.get(position).birthday);
                     mContext.startActivity(intent);
                 }
             });

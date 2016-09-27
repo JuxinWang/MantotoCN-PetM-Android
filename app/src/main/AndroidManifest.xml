@@ -22,7 +22,7 @@
         <activity android:name="com.petm.property.activities.MainActivity"/>
         <activity android:name=".activities.RegisterActivity"/>
         <activity android:name=".activities.PetCenterActivity"/>
-        <activity android:name=".activities.PersonCenterActivity"/>
+        <activity android:windowSoftInputMode="adjustPan" android:name=".activities.PersonCenterActivity"/>
         <activity android:name=".activities.AddPetshopActivity"/>
         <activity android:name=".activities.RemindActivity"/>
         <activity android:name=".activities.AddPetActivity"/>

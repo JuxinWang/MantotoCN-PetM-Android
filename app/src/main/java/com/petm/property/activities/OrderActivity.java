@@ -154,6 +154,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
             }
         });
 
+
         IRequest.postJson(OrderActivity.this, Constant.BEAUTICIAN_GET_ALL, object, new RequestListener() {
             @Override
             public void requestSuccess(JSONObject json) {

@@ -3,7 +3,10 @@ package com.petm.property.activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +30,8 @@ import com.alibaba.sdk.android.media.utils.FailReason;
 import com.alibaba.sdk.android.media.utils.MediaUtils;
 import com.alibaba.sdk.android.media.utils.StringUtils;
 import com.android.volley.VolleyError;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.petm.property.PetMApplication;
 import com.petm.property.R;
 import com.petm.property.adapter.PetVaccinesAdapter;
@@ -34,6 +39,8 @@ import com.petm.property.common.Constant;
 import com.petm.property.common.LocalStore;
 import com.petm.property.dialog.PromptDialog;
 import com.petm.property.fragments.LoadingFragment;
+import com.petm.property.fragments.ProgressFragment;
+import com.petm.property.model.NetInfo;
 import com.petm.property.model.VOCategory;
 import com.petm.property.model.VOPetShop;
 import com.petm.property.model.VOPetVaccines;
@@ -74,6 +81,10 @@ import java.util.Set;
  */
 public class AddPetActivity extends BaseActivity implements View.OnClickListener, PetVaccinesAdapter.OnDateChangedListener {
     private static final String TAG = "AddPetActivity";
+    /**
+     * 头像名称
+     */
+    private static final String IMAGE_FILE_NAME = "image.jpg";
     private View[] views;
     private LoadingFragment fragment;
     private RecyclerView mRecyclerView;
@@ -103,14 +114,31 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
     private Map<Integer, String> vaccin_arrayMap = new HashMap<>();
     public UploadListener mListener;
     public String mTaskId;
+    private String photoPath = "";
+    /**
+     * 编辑信息
+     */
+    protected ImageLoader imageLoader = ImageLoader.getInstance();
+    DisplayImageOptions options;
+    private String etImgPath;
+    private String etPetName;
+    private String etCategoryName;
+    private String etBirthday;
+
     @Override
     protected int getContentViewResId() {
         return R.layout.activity_add_pet;
     }
 
     @Override
+    protected int getTopBarTextRes() {
+        return R.string.add_pet;
+    }
+
+    @Override
     protected void initViews() {
         super.initViews();
+        Bundle bundle = getIntent().getExtras();
         fragment = new LoadingFragment();
         fragment.show(getSupportFragmentManager(), "Loading");
         views = new View[]{findViewById(R.id.male), findViewById(R.id.female)};
@@ -122,6 +150,23 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
         petName = (EditText) findViewById(R.id.pet_name);
         petBirthday = (EditText) findViewById(R.id.pet_birthday);
         petCategory = (EditText) findViewById(R.id.pet_category);
+        if (bundle != null) {
+            etImgPath = bundle.getString("imgpath");
+            etPetName = bundle.getString("petname");
+            etCategoryName = bundle.getString("categoryname");
+            etBirthday = bundle.getString("birthday");
+            options = new DisplayImageOptions.Builder()
+                    .showImageOnLoading(R.drawable.icon) //设置图片在下载期间显示的图片
+                    .showImageForEmptyUri(R.drawable.icon)//设置图片Uri为空或是错误的时候显示的图片
+                    .showImageOnFail(R.drawable.icon)  //设置图片加载/解码过程中错误时候显示的图片
+                    .cacheInMemory(true) //加载本地图片不需要再做SD卡缓存，只做内存缓存即可
+                    .considerExifParams(true)
+                    .build();//构建完成
+            imageLoader.displayImage(etImgPath, headImg, options);
+            petName.setText(etPetName);
+            petBirthday.setText(DateHelper.getStringTime(etBirthday, "yyyy-MM-dd"));
+            petCategory.setText(etCategoryName);
+        }
         loadDatas();
         setSelected(0);
         for (int i = 0; i < views.length; i++) {
@@ -175,23 +220,21 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
         mListener = new UploadListener() {
             @Override
             public void onUploading(UploadTask uploadTask) {
-                LogU.i(TAG,uploadTask.getCurrent()+"/"+uploadTask.getTotal());
-                ToastU.showShort(AddPetActivity.this,""+ uploadTask.getCurrent());
+                LogU.i(TAG, uploadTask.getCurrent() + "/" + uploadTask.getTotal());
             }
 
             @Override
             public void onUploadFailed(UploadTask uploadTask, FailReason failReason) {
                 UploadTask.Result result = uploadTask.getResult();
-                String requestId = (null==result ? "null" : result.requestId);
-                Log.e(TAG, "###########onUploadFailed:" + requestId );
+                String requestId = (null == result ? "null" : result.requestId);
+                Log.e(TAG, "###########onUploadFailed:" + requestId);
                 ToastU.showShort(AddPetActivity.this, "" + requestId);
             }
 
             @Override
             public void onUploadComplete(UploadTask uploadTask) {
-                ToastU.showShort(AddPetActivity.this,"成功上传");
-                UploadTask.Result res = uploadTask.getResult();			//上传成功后，从服务端返回的结果都在这个对象中，根据自己需要获取
-                Log.e(TAG, "###########onUploadComplete:"+uploadTask.getResult().requestId);
+                UploadTask.Result res = uploadTask.getResult();            //上传成功后，从服务端返回的结果都在这个对象中，根据自己需要获取
+                Log.e(TAG, "###########onUploadComplete:" + uploadTask.getResult().requestId);
                 path = res.url;
                 if (path.equals("")) {
                     path = "http://img0.bdstatic.com/img/image/zhengjiuwxr.jpg";
@@ -201,7 +244,7 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
 
             @Override
             public void onUploadCancelled(UploadTask uploadTask) {
-                ToastU.showShort(AddPetActivity.this,"上传失败");
+                ToastU.showShort(AddPetActivity.this, "上传失败");
             }
         };
     }
@@ -272,25 +315,34 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
                 pwOptions.showAtLocation(petCategory, Gravity.BOTTOM, 0, 0);
                 break;
             case R.id.save:
-//                uploadFile(SelectHeadTools.uriPath,false);
-                addPetRequest();
+                fragment = new LoadingFragment();
+                fragment.show(getSupportFragmentManager(), "Loading");
+                if (photoPath.equals("") || photoPath == null) {
+                    path = "http://img0.bdstatic.com/img/image/zhengjiuwxr.jpg";
+                    addPetRequest();
+                } else {
+                    uploadFile(photoPath, false);
+                }
+                break;
+            case R.id.top_bar_left_img:
+                finish();
                 break;
         }
     }
 
     public void uploadFile(final String paths, boolean compress) {
         if (TextUtils.isEmpty(paths)) {
-            ToastU.showShort(AddPetActivity.this,"您还未给您的宠物设置头像");
+            ToastU.showShort(AddPetActivity.this, "您还未给您的宠物设置头像");
             return;
         }
-        final String fileName = "file_" + StringUtils.getUUID();
+        final String fileName = "petm_" + StringUtils.getUUID();
+        final String tempFile = DateHelper.getStringTime("" + System.currentTimeMillis(), "yyyyMMdd");
         final File file = new File(paths);
         final UploadOptions options = new UploadOptions.Builder()
                 .tag(String.valueOf(SystemClock.elapsedRealtime()))
-                .dir("/PetM/tempUpload")
+                .dir("/PetM/Images/" + tempFile)
                 .aliases(fileName).build();
         if (!compress) {
-            ToastU.showShort(AddPetActivity.this,"成功" + file );
             mTaskId = PetMApplication.mediaService.upload(file, PetMApplication.NAMESPACE, options, mListener);
         } else {
             AliUtils.SERVICE.submit(new Runnable() {
@@ -327,18 +379,25 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void requestSuccess(JSONObject json) {
                 LogU.i(TAG, json.toString());
-                new PromptDialog(AddPetActivity.this)
-                        .setDialogType(PromptDialog.DIALOG_TYPE_SUCCESS)
-                        .setAnimationEnable(true)
-                        .setTitleText("添加成功")
-                        .setContentText("添加宠物成功")
-                        .setPositiveListener("确定", new PromptDialog.OnPositiveListener() {
-                            @Override
-                            public void onClick(PromptDialog dialog) {
-                                finish();
-                                dialog.dismiss();
-                            }
-                        }).show();
+                NetInfo netInfo = JsonUtils.object(json.toString(), NetInfo.class);
+                if (netInfo.code == 200) {
+                    fragment.dismiss();
+                    new PromptDialog(AddPetActivity.this)
+                            .setDialogType(PromptDialog.DIALOG_TYPE_SUCCESS)
+                            .setAnimationEnable(true)
+                            .setTitleText("添加成功")
+                            .setContentText("添加宠物成功")
+                            .setPositiveListener("确定", new PromptDialog.OnPositiveListener() {
+                                @Override
+                                public void onClick(PromptDialog dialog) {
+                                    finish();
+                                    dialog.dismiss();
+                                }
+                            }).show();
+                } else {
+                    fragment.dismiss();
+                    ToastU.showShort(AddPetActivity.this,netInfo.desc);
+                }
             }
 
             @Override
@@ -382,21 +441,31 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case Constant.PHOTO_REQUEST_TAKEPHOTO: // 拍照
-                SelectHeadTools.startPhotoZoom(this, photoUri, 600);
+                // 判断存储卡是否可以用，可用进行存储
+                String state = Environment.getExternalStorageState();
+                if (state.equals(Environment.MEDIA_MOUNTED)) {
+                    File path = Environment
+                            .getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+                    File tempFile = new File(path, IMAGE_FILE_NAME);
+                    SelectHeadTools.startPhotoZoom(this, Uri.fromFile(tempFile), 300);
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "未找到存储卡，无法存储照片！", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case Constant.PHOTO_REQUEST_GALLERY://相册获取
                 if (data == null)
                     return;
-                SelectHeadTools.startPhotoZoom(this, data.getData(), 600);
+                SelectHeadTools.startPhotoZoom(this, data.getData(), 300);
                 break;
             case Constant.PHOTO_REQUEST_CUT:  //接收处理返回的图片结果
-                if (data == null)
-                    return;
-                try {
-                    Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(SelectHeadTools.path));
+                Bundle extras = data.getExtras();
+                if (extras != null) {
+                    Bitmap photo = extras.getParcelable("data");
+                    String photoName = SelectHeadTools.getPhotoFileName();
+                    photoPath = SelectHeadTools.storeImageToFile(photo, photoName);
+                    Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
                     headImg.setImageBitmap(bitmap);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
                 }
                 break;
         }

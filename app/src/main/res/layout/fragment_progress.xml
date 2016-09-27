@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tc="http://schemas.android.com/apk/res-auto"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="@drawable/loading_bg">
+
+    <!-- 正在加载 -->
+
+   <com.petm.property.views.TasksCompletedView
+       android:id="@+id/progress"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       tc:radius="30dp"
+       tc:strokeWidth="2dp"
+       tc:circleColor="@color/circle_color"
+       tc:ringColor="@color/ring_color" /> />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5.0dip" >
+
+        <TextView
+            android:id="@+id/loading_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="正在加载···"
+            android:textColor="#ffffffff"
+            android:textSize="15.0dip" />
+    </LinearLayout>
+
+</LinearLayout>

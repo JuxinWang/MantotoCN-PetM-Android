@@ -45,6 +45,7 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
     private ArrayList<String> options1Items = new ArrayList<String>();
     private EditText personName,personSex,personBirth;
     private Button save;
+    private String path;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,6 +68,12 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
         personName.setText(bundle.getString("truename"));
         personSex.setText(bundle.getString("gender").equals("MAN")?"男":"女");
         personBirth.setText(DateHelper.getStringTime(bundle.getString("birthday")));
+        if (!bundle.getString("path").equals("path")){
+            ToastU.showShort(mContext,bundle.getString("path"));
+            path = bundle.getString("path");
+        }else {
+            path = "http://v1.qzone.cc/avatar/201401/31/20/11/52eb92dd6bcdf173.jpg%21200x200.jpg";
+        }
         save = (Button) mView.findViewById(R.id.save);
         //      时间选择器
         Calendar calendar = Calendar.getInstance();
@@ -114,7 +121,27 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
                 pwTime.showAtLocation(personBirth, Gravity.BOTTOM, 0, 0, new Date());
                 break;
             case R.id.save:
-                ToastU.showShort(getActivity(),"提交");
+                JSONObject object = new JSONObject();
+                try {
+                    object.put("userid",LocalStore.getUserid(mContext));
+                    object.put("truename",personName.getText().toString().trim());
+                    object.put("gender",personSex.getText().toString().trim().equals("男")?1:2);
+                    object.put("time",DateHelper.getTime(personBirth.getText().toString(),"yyyy-MM-dd"));
+                    object.put("path",path);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                IRequest.postJson(mContext, Constant.USERINFO_UPDATE, object, new RequestListener() {
+                    @Override
+                    public void requestSuccess(JSONObject json) {
+                        ToastU.showShort(mContext,json.toString());
+                    }
+
+                    @Override
+                    public void requestError(VolleyError error) {
+
+                    }
+                });
                 break;
         }
     }
