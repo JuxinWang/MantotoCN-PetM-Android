@@ -107,11 +107,13 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
     private JSONArray vaccin_array = new JSONArray();
     ;
     private String vaccinid;
+    private String petvaccinid;
     private Set<String> lists = new HashSet<>();
     private VOPetVaccines petVaccines;
     private int dateTag;
     private Map<Integer, String> maps = new HashMap<>();
     private Map<Integer, String> vaccin_arrayMap = new HashMap<>();
+    private Map<String, String> editMap = new HashMap<>();
     public UploadListener mListener;
     public String mTaskId;
     private String photoPath = "";
@@ -120,10 +122,15 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
      */
     protected ImageLoader imageLoader = ImageLoader.getInstance();
     DisplayImageOptions options;
+    private long petid;
     private String etImgPath;
     private String etPetName;
     private String etCategoryName;
     private String etBirthday;
+    private String[] vaccinTime;
+    private String[] vaccinids;
+    private String[] petvaccinids;
+    private boolean isEdit = false;
 
     @Override
     protected int getContentViewResId() {
@@ -132,6 +139,9 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected int getTopBarTextRes() {
+        if (isEdit) {
+            return R.string.edit_pet;
+        }
         return R.string.add_pet;
     }
 
@@ -139,8 +149,6 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
     protected void initViews() {
         super.initViews();
         Bundle bundle = getIntent().getExtras();
-        fragment = new LoadingFragment();
-        fragment.show(getSupportFragmentManager(), "Loading");
         views = new View[]{findViewById(R.id.male), findViewById(R.id.female)};
         mRecyclerView = (RecyclerView) findViewById(R.id.pet_vaccines);
         layoutManager = new LinearLayoutManager(this);
@@ -151,10 +159,23 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
         petBirthday = (EditText) findViewById(R.id.pet_birthday);
         petCategory = (EditText) findViewById(R.id.pet_category);
         if (bundle != null) {
+            isEdit = true;
+            petid = bundle.getLong("petid");
             etImgPath = bundle.getString("imgpath");
             etPetName = bundle.getString("petname");
             etCategoryName = bundle.getString("categoryname");
             etBirthday = bundle.getString("birthday");
+            categoryid = bundle.getLong("categoryid");
+            vaccinTime = bundle.getStringArray("vaccintime");
+            vaccinids = bundle.getStringArray("vaccinids");
+            petvaccinids = bundle.getStringArray("petvaccinids");
+            if (vaccinids!=null&&vaccinids.length > 0) {
+                for (int i = 0; i < vaccinids.length; i++) {
+                    LogU.i(TAG, vaccinids[i] + "----" + vaccinTime[i]);
+                    editMap.put(vaccinids[i], vaccinTime[i]);
+                    LogU.i(TAG, editMap.get(vaccinids[i]));
+                }
+            }
             options = new DisplayImageOptions.Builder()
                     .showImageOnLoading(R.drawable.icon) //设置图片在下载期间显示的图片
                     .showImageForEmptyUri(R.drawable.icon)//设置图片Uri为空或是错误的时候显示的图片
@@ -168,6 +189,7 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
             petCategory.setText(etCategoryName);
         }
         loadDatas();
+
         setSelected(0);
         for (int i = 0; i < views.length; i++) {
             final int temp = i;
@@ -189,18 +211,24 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
 
             @Override
             public void onTimeSelect(Date date) {
+                String add = "-add";
                 if (dateTag == -1) {
                     petBirthday.setText(DateHelper.getTime(date));
                     timeTemp = date.getTime();
                 } else {
                     vaccin_arrayMap.put(dateTag, vaccinid + "-" + date.getTime());
                     try {
-                        vaccin_array.put(dateTag, vaccinid + "-" + date.getTime() / 1000);
+                       if (!vaccin_array.isNull(dateTag)){
+                           add = "-edit-"+petvaccinid;
+                       }
+                        vaccin_array.put(dateTag, vaccinid + "-" + date.getTime() / 1000+add);
+                        LogU.i(TAG,"vaccin_array:"+ vaccin_array.toString());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     maps.put(dateTag, DateHelper.getTime(date));
-                    mAdapter.notifyDataSetChanged();
+                    LogU.i(TAG, "maps:" + maps.toString());
+                    mAdapter.notifyItemChanged(dateTag);
                 }
             }
         });
@@ -239,7 +267,11 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
                 if (path.equals("")) {
                     path = "http://img0.bdstatic.com/img/image/zhengjiuwxr.jpg";
                 }
-                addPetRequest();
+                if (isEdit){
+                    editPetRequest();
+                }else {
+                    addPetRequest();
+                }
             }
 
             @Override
@@ -247,6 +279,55 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
                 ToastU.showShort(AddPetActivity.this, "上传失败");
             }
         };
+    }
+
+    private void editPetRequest() {
+        fragment = new LoadingFragment();
+        fragment.show(getSupportFragmentManager(),"Loading");
+        JSONObject object = new JSONObject();
+        try {
+            object.put("petid",petid);
+            object.put("petnick", petName.getText().toString());
+            object.put("gender", gender);
+            object.put("time", timeTemp);
+            object.put("categoryid", categoryid);
+            object.put("path", path);
+            object.put("vaccin_array", vaccin_array);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        LogU.i(TAG, "editpet:"+object.toString());
+        IRequest.postJson(AddPetActivity.this, Constant.PET_EDIT, object, new RequestListener() {
+            @Override
+            public void requestSuccess(JSONObject json) {
+                LogU.i(TAG, json.toString());
+                NetInfo netInfo = JsonUtils.object(json.toString(), NetInfo.class);
+                if (netInfo.code == 200) {
+                    fragment.dismiss();
+                    new PromptDialog(AddPetActivity.this)
+                            .setDialogType(PromptDialog.DIALOG_TYPE_SUCCESS)
+                            .setAnimationEnable(true)
+                            .setTitleText("编辑成功")
+                            .setContentText("编辑宠物成功")
+                            .setPositiveListener("确定", new PromptDialog.OnPositiveListener() {
+                                @Override
+                                public void onClick(PromptDialog dialog) {
+                                    finish();
+                                    dialog.dismiss();
+                                }
+                            }).show();
+                } else {
+                    fragment.dismiss();
+                    ToastU.showShort(AddPetActivity.this, netInfo.desc);
+                }
+            }
+
+            @Override
+            public void requestError(VolleyError error) {
+                fragment.dismiss();
+                ToastU.showShort(AddPetActivity.this, error.getMessage());
+            }
+        });
     }
 
     private void setSelected(int position) {
@@ -262,6 +343,8 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void loadDatas() {
         super.loadDatas();
+        fragment = new LoadingFragment();
+        fragment.show(getSupportFragmentManager(), "Loading");
         JSONObject object = new JSONObject();
         try {
             object.put("tag", "DOG");
@@ -276,7 +359,7 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
                 LogU.i(TAG, json.toString());
                 petVaccines = JsonUtils.object(json.toString(), VOPetVaccines.class);
                 if (petVaccines.code == 200) {
-                    mAdapter = new PetVaccinesAdapter(AddPetActivity.this, petVaccines.data, maps);
+                    mAdapter = new PetVaccinesAdapter(AddPetActivity.this, petVaccines.data, maps, vaccinTime, vaccinids,petvaccinids,vaccin_array);
                     mRecyclerView.setAdapter(mAdapter);
                 } else {
                     ToastU.showShort(AddPetActivity.this, petVaccines.desc);
@@ -315,11 +398,13 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
                 pwOptions.showAtLocation(petCategory, Gravity.BOTTOM, 0, 0);
                 break;
             case R.id.save:
-                fragment = new LoadingFragment();
-                fragment.show(getSupportFragmentManager(), "Loading");
                 if (photoPath.equals("") || photoPath == null) {
                     path = "http://img0.bdstatic.com/img/image/zhengjiuwxr.jpg";
-                    addPetRequest();
+                    if (isEdit) {
+                        editPetRequest();
+                    } else {
+                        addPetRequest();
+                    }
                 } else {
                     uploadFile(photoPath, false);
                 }
@@ -363,6 +448,8 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void addPetRequest() {
+        fragment = new LoadingFragment();
+        fragment.show(getSupportFragmentManager(), "Loading");
         JSONObject object = new JSONObject();
         try {
             object.put("keeperid", LocalStore.getKeeperid(AddPetActivity.this));
@@ -375,6 +462,7 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        LogU.i(TAG, object.toString());
         IRequest.postJson(AddPetActivity.this, Constant.PET_ADD, object, new RequestListener() {
             @Override
             public void requestSuccess(JSONObject json) {
@@ -396,7 +484,7 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
                             }).show();
                 } else {
                     fragment.dismiss();
-                    ToastU.showShort(AddPetActivity.this,netInfo.desc);
+                    ToastU.showShort(AddPetActivity.this, netInfo.desc);
                 }
             }
 
@@ -472,9 +560,13 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
     }
 
     @Override
-    public void OnDateChanged(String string, int position) {
+    public void OnDateChanged(String string, int position,JSONArray vaccin_array,Map<Integer, String> maps,String petvaccinid) {
         dateTag = position;
         pwTime.showAtLocation(petBirthday, Gravity.BOTTOM, 0, 0, new Date());
         vaccinid = string;
+        this.petvaccinid = petvaccinid;
+//        this.vaccin_array = vaccin_array;
+        this.maps = maps;
+        LogU.i(TAG,"datechange:"+vaccin_array.toString());
     }
 }

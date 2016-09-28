@@ -44,8 +44,12 @@ public class PetInfoActivity extends BaseActivity implements View.OnClickListene
     private String petName;
     private String categoryName;
     private String birthday;
+    private long categoryid;
     private TextView name,category,birth;
     private ImageView img;
+    private String[] vaccinTime;
+    private String[] vaccinids;
+    private String[] petvaccinids;
     protected ImageLoader imageLoader = ImageLoader.getInstance();
     DisplayImageOptions options;
     @Override
@@ -67,6 +71,7 @@ public class PetInfoActivity extends BaseActivity implements View.OnClickListene
         petName = bundle.getString("petname");
         categoryName = bundle.getString("categoryname");
         birthday = bundle.getString("birthday");
+        categoryid = bundle.getLong("categoryid");
         petVaccinLL = (LinearLayout) findViewById(R.id.pet_vaccin_ll);
         layoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         mRecyclerView = (RecyclerView) findViewById(R.id.petvaccin_recycler);
@@ -105,6 +110,15 @@ public class PetInfoActivity extends BaseActivity implements View.OnClickListene
                 VOPetVaccin petVaccins = JsonUtils.object(json.toString(),VOPetVaccin.class);
                 if (petVaccins.code ==200){
                     if (petVaccins.data.size()>0){
+                        vaccinTime = new String[petVaccins.data.size()];
+                        vaccinids = new String[petVaccins.data.size()];
+                        petvaccinids = new String[petVaccins.data.size()];
+                        for (int i =0;i<petVaccins.data.size();i++){
+                            vaccinids[i] = ""+petVaccins.data.get(i).vaccin.vaccinid;
+                            vaccinTime[i] = petVaccins.data.get(i).vtime;
+                            petvaccinids[i] = ""+petVaccins.data.get(i).petvaccinid;
+                            LogU.i(TAG,vaccinids[i]+"---"+vaccinTime[i]);
+                        }
                         petVaccinLL.setVisibility(View.VISIBLE);
                         mAdapter = new PetVaccinAdapter(PetInfoActivity.this,petVaccins.data);
                         mRecyclerView.setAdapter(mAdapter);
@@ -131,11 +145,16 @@ public class PetInfoActivity extends BaseActivity implements View.OnClickListene
                 Intent intent = new Intent();
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("imgpath",imgpath);
-                intent.putExtra("petname",petName);
+                intent.putExtra("petid", petid);
+                intent.putExtra("imgpath", imgpath);
+                intent.putExtra("petname", petName);
                 intent.putExtra("imgpath",imgpath);
                 intent.putExtra("categoryname",categoryName);
+                intent.putExtra("categoryid",categoryid);
                 intent.putExtra("birthday",birthday);
+                intent.putExtra("vaccinids",vaccinids);
+                intent.putExtra("vaccintime",vaccinTime);
+                intent.putExtra("petvaccinids",petvaccinids);
                 intent.setClass(PetInfoActivity.this, AddPetActivity.class);
                 startActivity(intent);
                 break;

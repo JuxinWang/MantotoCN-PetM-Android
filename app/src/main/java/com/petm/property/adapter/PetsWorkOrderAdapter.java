@@ -27,12 +27,13 @@ import java.util.List;
  */
 public class PetsWorkOrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Pet> pets;
-    private List<PetWorkOrder>workOrders;
+    private List<PetWorkOrder> workOrders;
     private Context mContext;
     private LayoutInflater mLayoutInflater;
     protected ImageLoader imageLoader = ImageLoader.getInstance();
     DisplayImageOptions options;
-    public PetsWorkOrderAdapter(Context mContext, List<Pet> pets ,List<PetWorkOrder>workOrders) {
+
+    public PetsWorkOrderAdapter(Context mContext, List<Pet> pets, List<PetWorkOrder> workOrders) {
         this.pets = pets;
         this.workOrders = workOrders;
         this.mContext = mContext;
@@ -44,6 +45,7 @@ public class PetsWorkOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
         ImageView mImg;
         TextView textView;
         LinearLayout workLL;
+
         public ContentViewHolder(View itemView) {
             super(itemView);
             mImg = (ImageView) itemView.findViewById(R.id.petImg);
@@ -54,7 +56,7 @@ public class PetsWorkOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ContentViewHolder(mLayoutInflater.inflate(R.layout.item_work_order,parent,false));
+        return new ContentViewHolder(mLayoutInflater.inflate(R.layout.item_work_order, parent, false));
     }
 
     @Override
@@ -68,19 +70,21 @@ public class PetsWorkOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
                 .considerExifParams(true)
                 .build();//构建完成
         String imgPath = pets.get(position).media.path;
-        for (int i = 0;i< workOrders.size();i++){
-            if (pets.get(position).petid == workOrders.get(i).petid) {
-                TextView mTv = new TextView(mContext);
-                mTv.setText("上次"+workOrders.get(i).petService.petservicename+"的时间为"+ DateHelper.getStringTime(workOrders.get(i).btime,"yyyy.MM.dd")+"日。");
-                mTv.setSingleLine();
-                ((ContentViewHolder) holder).workLL.addView(mTv);
+        if (workOrders!=null) {
+            for (int i = 0; i < workOrders.size(); i++) {
+                if (pets.get(position).petid == workOrders.get(i).petid) {
+                    TextView mTv = new TextView(mContext);
+                    mTv.setText("上次" + workOrders.get(i).petService.petservicename + "的时间为" + DateHelper.getStringTime(workOrders.get(i).btime, "yyyy.MM.dd") + "日。");
+                    mTv.setSingleLine();
+                    ((ContentViewHolder) holder).workLL.addView(mTv);
+                }
             }
         }
-        if (!imgPath.equals(((ContentViewHolder) holder).mImg.getTag())){
+        if (!imgPath.equals(((ContentViewHolder) holder).mImg.getTag())) {
             ((ContentViewHolder) holder).mImg.setTag(imgPath);
-            imageLoader.displayImage(pets.get(position).media.path,((ContentViewHolder)holder).mImg,options);
+            imageLoader.displayImage(pets.get(position).media.path, ((ContentViewHolder) holder).mImg, options);
         }
-        imageLoader.displayImage(pets.get(position).media.path,((ContentViewHolder)holder).mImg,options);
+        imageLoader.displayImage(pets.get(position).media.path, ((ContentViewHolder) holder).mImg, options);
         ((ContentViewHolder) holder).textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

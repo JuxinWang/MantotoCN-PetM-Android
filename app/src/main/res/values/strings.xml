@@ -7,6 +7,7 @@
     <string name="pet_commit">提交</string>
     <string name="add_pet_shop">添加宠物店</string>
     <string name="add_pet">添加宠物</string>
+    <string name="edit_pet">编辑宠物</string>
     <string name="person_center">我</string>
     <string name="remind">提醒</string>
     <string name="pet_info">宠物信息</string>

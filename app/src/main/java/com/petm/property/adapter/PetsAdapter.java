@@ -94,6 +94,7 @@ public class PetsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     intent.putExtra("imgpath",pets.get(position).media.path);
                     intent.putExtra("categoryname",pets.get(position).category.petcategoryname);
                     intent.putExtra("birthday",pets.get(position).birthday);
+                    intent.putExtra("categoryid",pets.get(position).category.petcategoryid);
                     mContext.startActivity(intent);
                 }
             });
