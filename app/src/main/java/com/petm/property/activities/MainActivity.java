@@ -32,7 +32,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "MainActivity";
     private RecyclerView mPetshops;
     private ImageView addPetshop;
-    private LinearLayout addPetShopLL,petshopsLL;
+    private LinearLayout addPetShopLL, petshopsLL;
     private RecyclerView petShopsRecyclerView;
     private LinearLayoutManager layoutManager;
     private LinearLayoutManager layoutManager2;
@@ -40,6 +40,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private RecyclerView petsRecycler;
     private LoadingFragment fragment;
     private PetsWorkOrderAdapter petsAdapter;
+
     @Override
     protected int getContentViewResId() {
         return R.layout.activity_main;
@@ -61,7 +62,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         layoutManager2.setOrientation(LinearLayoutManager.VERTICAL);
         petsRecycler.setLayoutManager(layoutManager2);
         fragment = new LoadingFragment();
-        fragment.show(getSupportFragmentManager(),"Loading");
+        fragment.show(getSupportFragmentManager(), "Loading");
         loadDatas();
     }
 
@@ -121,33 +122,33 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 if (pets.code == 200) {
                     JSONObject obj = new JSONObject();
                     try {
-                        obj.put("keeperid",LocalStore.getKeeperid(MainActivity.this));
+                        obj.put("keeperid", LocalStore.getKeeperid(MainActivity.this));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     IRequest.postJson(MainActivity.this, Constant.REMIND_WORKO_ORDER_GET_BY_KEEPER, obj, new RequestListener() {
                         @Override
                         public void requestSuccess(JSONObject json) {
-                            LogU.i(TAG,json.toString());
-                            VOPetWorkOrder workOrders = JsonUtils.object(json.toString(),VOPetWorkOrder.class);
-                            if (workOrders.code == 200){
-                                petsAdapter = new PetsWorkOrderAdapter(MainActivity.this, pets.data ,workOrders.data);
+                            LogU.i(TAG, json.toString());
+                            VOPetWorkOrder workOrders = JsonUtils.object(json.toString(), VOPetWorkOrder.class);
+                            if (workOrders.code == 200) {
+                                petsAdapter = new PetsWorkOrderAdapter(MainActivity.this, pets.data, workOrders.data);
                                 petsRecycler.setAdapter(petsAdapter);
-                            }else if(workOrders.code == 201) {
-                                petsAdapter = new PetsWorkOrderAdapter(MainActivity.this, pets.data ,workOrders.data);
+                            } else if (workOrders.code == 201) {
+                                petsAdapter = new PetsWorkOrderAdapter(MainActivity.this, pets.data, workOrders.data);
                                 petsRecycler.setAdapter(petsAdapter);
-                            }else {
-                                ToastU.showShort(MainActivity.this,workOrders.desc);
+                            } else {
+                                ToastU.showShort(MainActivity.this, workOrders.desc);
                             }
                         }
 
                         @Override
                         public void requestError(VolleyError error) {
-                            ToastU.showShort(MainActivity.this,error.getMessage());
+                            ToastU.showShort(MainActivity.this, error.getMessage());
                         }
                     });
-                }else {
-                    ToastU.showShort(getApplicationContext(),pets.desc);
+                } else {
+                    ToastU.showShort(getApplicationContext(), pets.desc);
                 }
             }
 
@@ -164,25 +165,53 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.add_petshop_img:
-                intent.setClass(MainActivity.this, RegisterActivity.class);
+                if (!LocalStore.getIsLoginn(MainActivity.this)) {
+                    intent.setClass(MainActivity.this, RegisterActivity.class);
+                } else {
+                    intent.setClass(MainActivity.this, AddPetActivity.class);
+                }
                 startActivity(intent);
                 break;
             case R.id.add_petshop_two:
-                intent.setClass(MainActivity.this, AddPetshopActivity.class);
+                if (!LocalStore.getIsLoginn(MainActivity.this)) {
+                    intent.setClass(MainActivity.this, RegisterActivity.class);
+                } else {
+                    intent.setClass(MainActivity.this, AddPetshopActivity.class);
+                }
                 startActivity(intent);
                 break;
             case R.id.petcenter:
-                intent.setClass(MainActivity.this,PetCenterActivity.class);
+                if (!LocalStore.getIsLoginn(MainActivity.this)) {
+                    intent.setClass(MainActivity.this, RegisterActivity.class);
+                } else {
+                    intent.setClass(MainActivity.this, PetCenterActivity.class);
+                }
                 startActivity(intent);
                 break;
             case R.id.personcenter:
-                intent.setClass(MainActivity.this,PersonCenterActivity.class);
+                if (!LocalStore.getIsLoginn(MainActivity.this)) {
+                    intent.setClass(MainActivity.this, RegisterActivity.class);
+                } else {
+                    intent.setClass(MainActivity.this, PersonCenterActivity.class);
+                }
                 startActivity(intent);
                 break;
             case R.id.remind:
-                intent.setClass(MainActivity.this,RemindActivity.class);
+                if (!LocalStore.getIsLoginn(MainActivity.this)) {
+                    intent.setClass(MainActivity.this, RegisterActivity.class);
+                } else {
+                    intent.setClass(MainActivity.this, RemindActivity.class);
+                }
+                startActivity(intent);
+                break;
+            case R.id.notification:
+                if (!LocalStore.getIsLoginn(MainActivity.this)) {
+                    intent.setClass(MainActivity.this, RegisterActivity.class);
+                } else {
+                    intent.setClass(MainActivity.this, NotificationActivity.class);
+                }
                 startActivity(intent);
                 break;
         }

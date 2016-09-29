@@ -26,7 +26,7 @@ import org.json.JSONObject;
  * At 11:21
  * PetM
  */
-public class RemindActivity extends BaseActivity {
+public class RemindActivity extends BaseActivity implements View.OnClickListener{
     private static final String TAG = "RemindActivity";
     private LinearLayoutManager layoutManager;
     private RecyclerView remindRevyvler;
@@ -84,5 +84,14 @@ public class RemindActivity extends BaseActivity {
                 ToastU.showShort(RemindActivity.this, error.getMessage());
             }
         });
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.top_bar_left_img:
+                finish();
+                break;
+        }
     }
 }

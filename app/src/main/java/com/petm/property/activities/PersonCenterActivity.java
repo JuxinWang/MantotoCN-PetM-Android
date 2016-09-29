@@ -121,7 +121,7 @@ public class PersonCenterActivity extends BaseActivity implements View.OnClickLi
             @Override
             public void onUploading(UploadTask uploadTask) {
                 LogU.i(TAG, uploadTask.getCurrent() + "/" + uploadTask.getTotal());
-                ToastU.showShort(PersonCenterActivity.this, "" + uploadTask.getCurrent());
+                //ToastU.showShort(PersonCenterActivity.this, "" + uploadTask.getCurrent());
             }
 
             @Override
@@ -259,6 +259,9 @@ public class PersonCenterActivity extends BaseActivity implements View.OnClickLi
                 break;
             case R.id.order_info:
                 mViewPage.setCurrentItem(2);
+                break;
+            case R.id.top_bar_left_img:
+                finish();
                 break;
         }
     }

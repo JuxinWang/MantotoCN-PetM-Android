@@ -158,6 +158,9 @@ public class PetInfoActivity extends BaseActivity implements View.OnClickListene
                 intent.setClass(PetInfoActivity.this, AddPetActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.top_bar_left_img:
+                finish();
+                break;
         }
     }
 }

@@ -112,7 +112,7 @@ public class AddPetshopActivity extends BaseActivity implements OnClickListener,
                                 JSONObject object = new JSONObject();
                                 try {
                                     object.put("keeperid", LocalStore.getKeeperid(AddPetshopActivity.this));
-                                    object.put("code", "15045412899");
+                                    object.put("code",mEditText.getText().toString() );
                                     LogU.i(TAG, inviteCode);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -146,6 +146,9 @@ public class AddPetshopActivity extends BaseActivity implements OnClickListener,
                         dialog.dismiss();
                     }
                 }).show();
+                break;
+            case R.id.top_bar_left_img:
+                finish();
                 break;
         }
     }

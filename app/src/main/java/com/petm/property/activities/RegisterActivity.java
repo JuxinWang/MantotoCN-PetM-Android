@@ -10,12 +10,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
+import com.petm.property.PetMApplication;
 import com.petm.property.R;
 import com.petm.property.common.Constant;
 import com.petm.property.common.LocalStore;
+import com.petm.property.fragments.LoadingFragment;
 import com.petm.property.model.InfoUser;
+import com.petm.property.model.VOVarify;
 import com.petm.property.utils.CommonUtils;
 import com.petm.property.utils.JsonUtils;
+import com.petm.property.utils.LogU;
 import com.petm.property.utils.RSAEncryptor;
 import com.petm.property.utils.ToastU;
 import com.petm.property.volley.IRequest;
@@ -38,8 +42,9 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     private TextView getCode;
     private Button login;
     private String RandCode = "";
-    private static RSAEncryptor rsaEncryptor;
     private int i = 30;
+    private LoadingFragment fragment;
+    private static RSAEncryptor rsaEncryptor;
     @Override
     protected int getContentViewResId() {
         return R.layout.activity_register;
@@ -90,21 +95,28 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     ToastU.showShort(RegisterActivity.this,"请输入手机号");
                     return;
                 }
-//                if (CommonUtils.isEmpty(verifyCode)){
-//                    ToastU.showShort(RegisterActivity.this,"请输入验证码");
-//                    return;
-//                }
-//                if (!RandCode.equals(getCode.getText().toString())) {
-//                    ToastU.showShort(RegisterActivity.this, "验证码错误");
-//                    return;
-//                }
+                if (CommonUtils.isEmpty(verifyCode)){
+                    ToastU.showShort(RegisterActivity.this,"请输入验证码");
+                    return;
+                }
+                if (!RandCode.equals(verifyCode.getText().toString())) {
+                    LogU.i(TAG,RandCode);
+                    ToastU.showShort(RegisterActivity.this, "验证码错误");
+                    return;
+                }
                 login();
 
+                break;
+            case R.id.top_bar_left_img:
+                finish();
                 break;
         }
     }
 
     private void login() {
+        fragment = new LoadingFragment();
+        fragment.setMsg("正在登录...");
+        fragment.show(getSupportFragmentManager(),"Loading");
         JSONObject object = new JSONObject();
         try {
             object.put("mobile",mobile.getText().toString());
@@ -114,9 +126,11 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         IRequest.postJson(RegisterActivity.this, Constant.USER_ACTIVATE, object, new RequestListener() {
             @Override
             public void requestSuccess(JSONObject json) {
+                fragment.dismiss();
                 InfoUser userInfo = JsonUtils.object(json.toString(),InfoUser.class);
-                if (userInfo.code == 200){
+                if (userInfo.code == 200) {
                     Log.i(TAG,""+userInfo.data.user.username);
+                    LocalStore.setIsLogin(RegisterActivity.this,true);
                     LocalStore.setKeeperid(RegisterActivity.this, userInfo.data.keeperid);
                     LocalStore.setMobile(RegisterActivity.this, userInfo.data.user.mobile);
                     LocalStore.setUserid(RegisterActivity.this,userInfo.data.userid);
@@ -124,7 +138,6 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     intent.setClass(RegisterActivity.this,MainActivity.class);
                     startActivity(intent);
                     finish();
-                    ToastU.showShort(RegisterActivity.this, "" + LocalStore.getKeeperid(RegisterActivity.this));
                 }else {
                     ToastU.showShort(RegisterActivity.this,userInfo.desc);
                 }
@@ -132,6 +145,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
             @Override
             public void requestError(VolleyError error) {
+                fragment.dismiss();
                 ToastU.showShort(RegisterActivity.this,error.toString());
             }
         });
@@ -156,6 +170,14 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     private void getVerifyCode() {
         JSONObject object = new JSONObject();
+        String tokens;
+        try {
+            tokens =  Constant.USER_ACTIVATE+","+"com.wuxianying.gd720"+","+ CommonUtils.getTimeStamp()+","+ PetMApplication.getDeviceIMEI();
+            rsaEncryptor = new RSAEncryptor(Constant.RSA_PUBLIC_KEY, Constant.PKCS8_PRIVATE_KEY);
+            object.put("token",rsaEncryptor.encryptWithBase64(tokens));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         try {
             object.put("phoneNum",mobile.getText().toString());
             object.put("templateStr","SMS_5032123");
@@ -167,8 +189,14 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         IRequest.postJson(RegisterActivity.this, Constant.GET_RANT_CODE, object, new RequestListener() {
             @Override
             public void requestSuccess(JSONObject json) {
-//                ToastU.showShort(RegisterActivity.this,json.toString());
-                ToastU.showShort(RegisterActivity.this, "验证码已发送");
+//                ToastU.showShort(RegisterActivity.this, json.toString());
+                LogU.i(TAG, json.toString());
+                VOVarify voVarify = JsonUtils.object(json.toString(),VOVarify.class);
+                if (voVarify.code == 200){
+                    ToastU.showShort(RegisterActivity.this, "验证码已发送");
+                }else {
+                    ToastU.showShort(RegisterActivity.this, voVarify.desc);
+                }
             }
 
             @Override

@@ -44,6 +44,7 @@ public class PetCenterActivity extends BaseActivity implements View.OnClickListe
     private long petid;
     private VOPet pets;
     private boolean selected = false;
+    private String petname;
     @Override
     protected int getContentViewResId() {
         return R.layout.actvity_pet_center;
@@ -124,6 +125,7 @@ public class PetCenterActivity extends BaseActivity implements View.OnClickListe
                             mAdapter.notifyDataSetChanged();
                             petid = pets.data.get(position).petid;
                             selected = true;
+                            petname = pets.data.get(position).petname;
                         }
                     });
                 } else {
@@ -155,9 +157,13 @@ public class PetCenterActivity extends BaseActivity implements View.OnClickListe
                     return;
                 }
                 intent.setClass(PetCenterActivity.this,OrderActivity.class);
-                intent.putExtra("petshopid",petshopid);
+                intent.putExtra("petshopid", petshopid);
                 intent.putExtra("petid",petid);
+                intent.putExtra("petname",petname);
                 startActivity(intent);
+                break;
+            case R.id.top_bar_left_img:
+                finish();
                 break;
         }
     }

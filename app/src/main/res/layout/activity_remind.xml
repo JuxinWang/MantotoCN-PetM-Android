@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:visibility="gone"
-        android:text="暂无预约提醒"/>
+        android:text="暂无提醒提醒"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/remind_recycler"
         android:layout_width="match_parent"

@@ -45,6 +45,7 @@ import com.petm.property.model.VOCategory;
 import com.petm.property.model.VOPetShop;
 import com.petm.property.model.VOPetVaccines;
 import com.petm.property.utils.AliUtils;
+import com.petm.property.utils.CommonUtils;
 import com.petm.property.utils.DateHelper;
 import com.petm.property.utils.DialogCommon;
 import com.petm.property.utils.FileUtils;
@@ -312,6 +313,18 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
                             .setPositiveListener("确定", new PromptDialog.OnPositiveListener() {
                                 @Override
                                 public void onClick(PromptDialog dialog) {
+                                    Intent intent = new Intent();
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+                                            | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    intent.setClass(AddPetActivity.this, PetCenterActivity.class);
+                                    intent.putExtra("petid", petid);
+//                                    intent.putExtra("petname",petName.getText().toString());
+//                                    intent.putExtra("imgpath",etImgPath);
+//                                    intent.putExtra("categoryname",etCategoryName);
+//                                    intent.putExtra("birthday",petBirthday.getText().toString());
+//                                    intent.putExtra("categoryid",categoryid);
+                                    LogU.i(TAG,"-"+petid+petName.getText().toString()+etImgPath+etCategoryName+petBirthday.getText().toString()+categoryid);
+                                    startActivity(intent);
                                     finish();
                                     dialog.dismiss();
                                 }
@@ -398,6 +411,16 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
                 pwOptions.showAtLocation(petCategory, Gravity.BOTTOM, 0, 0);
                 break;
             case R.id.save:
+                if (CommonUtils.isEmpty(petName)){
+                    ToastU.showShort(AddPetActivity.this,"请输入昵称");
+                    return;
+                }                if (CommonUtils.isEmpty(petBirthday)){
+                    ToastU.showShort(AddPetActivity.this,"请输入生日");
+                    return;
+                }                if (CommonUtils.isEmpty(petCategory)){
+                    ToastU.showShort(AddPetActivity.this,"请选择品种");
+                    return;
+                }
                 if (photoPath.equals("") || photoPath == null) {
                     path = "http://img0.bdstatic.com/img/image/zhengjiuwxr.jpg";
                     if (isEdit) {
@@ -478,6 +501,11 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
                             .setPositiveListener("确定", new PromptDialog.OnPositiveListener() {
                                 @Override
                                 public void onClick(PromptDialog dialog) {
+                                    Intent intent = new Intent();
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+                                            | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    intent.setClass(AddPetActivity.this,PetCenterActivity.class);
+                                    startActivity(intent);
                                     finish();
                                     dialog.dismiss();
                                 }

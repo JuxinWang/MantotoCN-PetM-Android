@@ -17,6 +17,8 @@ public class LocalStore {
     public final static String USER_NAME = "username";
     public final static String KEEPERID="keeperid";
     public final static String USER_MOBILE="mobile";
+    public final static String IS_LOGIN = "is_login";//是否登录
+    public final static String IS_REMIND = "is_remind";//是否提醒
     public static User user;//用户信息
 
     /**
@@ -113,5 +115,46 @@ public class LocalStore {
         SharedPreferences saving = context.getSharedPreferences(USER_INFO, 0);
         return saving.getString(USER_MOBILE, "");
     }
+
+    /**
+     * 存储用户是否登录
+     * @param context
+     * @param isLogin
+     */
+    public static void setIsLogin(Context context, boolean isLogin){
+        SharedPreferences saving = context.getSharedPreferences(USER_INFO, 0);
+        saving.edit().putBoolean(IS_LOGIN, isLogin).commit();
+    }
+
+    /**
+     * 获取用户m是否登录
+     * @param context
+     * @return
+     */
+    public static boolean getIsLoginn(Context context){
+        SharedPreferences saving = context.getSharedPreferences(USER_INFO, 0);
+        return saving.getBoolean(IS_LOGIN, false);
+    }
+
+    /**
+     * 存储用户是否登录
+     * @param context
+     * @param isRemind
+     */
+    public static void setIsRemind(Context context, boolean isRemind){
+        SharedPreferences saving = context.getSharedPreferences(USER_INFO, 0);
+        saving.edit().putBoolean(IS_REMIND, isRemind).commit();
+    }
+
+    /**
+     * 获取用户m是否登录
+     * @param context
+     * @return
+     */
+    public static boolean getIsRemind(Context context){
+        SharedPreferences saving = context.getSharedPreferences(USER_INFO, 0);
+        return saving.getBoolean(IS_REMIND,true);
+    }
+
 
 }
