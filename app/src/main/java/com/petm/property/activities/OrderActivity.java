@@ -112,8 +112,9 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
         calendar.setTimeInMillis(System.currentTimeMillis());
         baseTime = (new Date(System.currentTimeMillis())).getTime() / 1000;
         dateTime.setText(DateHelper.getTimes(new Date(System.currentTimeMillis())));
-        pwTime = new TimePopupWindow(this, TimePopupWindow.Type.YEAR_MONTH_DAY);
-        pwTime.setRange(2000, calendar.get(Calendar.YEAR));
+        pwTime = new TimePopupWindow(this, TimePopupWindow.Type.MONTH_DAY);
+        //pwTime.setRange(2016, calendar.get(Calendar.YEAR));
+//        pwTime.setDayRange(3,10);
         //时间选择后回调
         pwTime.setOnTimeSelectListener(new TimePopupWindow.OnTimeSelectListener() {
 
@@ -184,7 +185,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
             @Override
             public void requestError(VolleyError error) {
                 fragment.dismiss();
-                ToastU.showShort(OrderActivity.this, error.getMessage());
+               // ToastU.showShort(OrderActivity.this, error.getMessage());
+                LogU.i(TAG,error.getMessage());
             }
         });
 
@@ -214,7 +216,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
 
             @Override
             public void requestError(VolleyError error) {
-                ToastU.showShort(OrderActivity.this, error.getMessage());
+              //  ToastU.showShort(OrderActivity.this, error.getMessage());
+                LogU.i(TAG,error.getMessage());
             }
         });
     }
@@ -277,7 +280,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
                     @Override
                     public void requestError(VolleyError error) {
                         fragment.dismiss();
-                        ToastU.showShort(OrderActivity.this, error.getMessage());
+                        //ToastU.showShort(OrderActivity.this, error.getMessage());
+                        LogU.i(TAG,error.getMessage());
                     }
                 });
                 break;

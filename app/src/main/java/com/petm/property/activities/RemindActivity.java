@@ -81,7 +81,8 @@ public class RemindActivity extends BaseActivity implements View.OnClickListener
 
             @Override
             public void requestError(VolleyError error) {
-                ToastU.showShort(RemindActivity.this, error.getMessage());
+               // ToastU.showShort(RemindActivity.this, error.getMessage());
+                LogU.i(TAG,error.getMessage());
             }
         });
     }

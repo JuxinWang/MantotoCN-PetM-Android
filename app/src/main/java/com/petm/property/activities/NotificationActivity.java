@@ -82,7 +82,8 @@ public class NotificationActivity extends BaseActivity implements OnClickListene
 
             @Override
             public void requestError(VolleyError error) {
-                ToastU.showShort(NotificationActivity.this, error.getMessage());
+              //  ToastU.showShort(NotificationActivity.this, error.getMessage());
+                LogU.i(TAG,error.getMessage());
             }
         });
     }

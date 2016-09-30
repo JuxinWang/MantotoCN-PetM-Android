@@ -338,7 +338,8 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void requestError(VolleyError error) {
                 fragment.dismiss();
-                ToastU.showShort(AddPetActivity.this, error.getMessage());
+              //  ToastU.showShort(AddPetActivity.this, error.getMessage());
+                LogU.i(TAG,error.getMessage());
             }
         });
     }
@@ -382,7 +383,8 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void requestError(VolleyError error) {
                 fragment.dismiss();
-                ToastU.showShort(AddPetActivity.this, error.getMessage());
+               // ToastU.showShort(AddPetActivity.this, error.getMessage());
+                LogU.i(TAG,error.getMessage());
             }
         });
     }
@@ -518,7 +520,8 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
 
             @Override
             public void requestError(VolleyError error) {
-                ToastU.showShort(AddPetActivity.this, error.getMessage());
+               // ToastU.showShort(AddPetActivity.this, error.getMessage());
+                LogU.i(TAG,error.getMessage());
             }
         });
 
@@ -548,7 +551,8 @@ public class AddPetActivity extends BaseActivity implements View.OnClickListener
 
             @Override
             public void requestError(VolleyError error) {
-                ToastU.showShort(AddPetActivity.this, error.getMessage());
+//                ToastU.showShort(AddPetActivity.this, error.getMessage());
+                LogU.i(TAG,error.getMessage());
             }
         });
     }

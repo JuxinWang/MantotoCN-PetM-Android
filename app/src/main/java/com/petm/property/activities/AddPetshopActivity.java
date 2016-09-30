@@ -91,7 +91,8 @@ public class AddPetshopActivity extends BaseActivity implements OnClickListener,
             @Override
             public void requestError(VolleyError error) {
                 fragment.dismiss();
-                ToastU.showShort(AddPetshopActivity.this, error.getMessage());
+               // ToastU.showShort(AddPetshopActivity.this, error.getMessage());
+                LogU.i(TAG,error.getMessage());
             }
         });
     }
@@ -102,8 +103,10 @@ public class AddPetshopActivity extends BaseActivity implements OnClickListener,
             case R.id.commit:
                 ColorDialog dialog = new ColorDialog(AddPetshopActivity.this);
                 dialog.setTitle("添加宠物店");
+                dialog.setTitleTextColor(Color.BLACK);
                 dialog.setContentText("您确定添加该宠物店么？")
                         .setColor(getResources().getColor(R.color.main_color))
+                        .setContentTextColor(Color.BLACK)
                         .setPositiveListener("确定", new ColorDialog.OnPositiveListener() {
                             @Override
                             public void onClick(ColorDialog dialog) {
@@ -112,7 +115,7 @@ public class AddPetshopActivity extends BaseActivity implements OnClickListener,
                                 JSONObject object = new JSONObject();
                                 try {
                                     object.put("keeperid", LocalStore.getKeeperid(AddPetshopActivity.this));
-                                    object.put("code",mEditText.getText().toString() );
+                                    object.put("code", mEditText.getText().toString());
                                     LogU.i(TAG, inviteCode);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -191,7 +194,8 @@ public class AddPetshopActivity extends BaseActivity implements OnClickListener,
                             @Override
                             public void requestError(VolleyError error) {
                                 fragment.dismiss();
-                                ToastU.showShort(AddPetshopActivity.this, error.getMessage());
+                                //ToastU.showShort(AddPetshopActivity.this, error.getMessage());
+                                LogU.i(TAG,error.getMessage());
                             }
                         });
                         dialog.dismiss();

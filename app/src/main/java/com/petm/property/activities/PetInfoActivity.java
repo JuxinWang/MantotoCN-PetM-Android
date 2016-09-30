@@ -133,7 +133,8 @@ public class PetInfoActivity extends BaseActivity implements View.OnClickListene
 
             @Override
             public void requestError(VolleyError error) {
-                ToastU.showShort(PetInfoActivity.this, error.getMessage());
+             //   ToastU.showShort(PetInfoActivity.this, error.getMessage());
+                LogU.i(TAG,error.getMessage());
             }
         });
     }

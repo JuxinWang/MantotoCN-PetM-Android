@@ -42,7 +42,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     private TextView getCode;
     private Button login;
     private String RandCode = "";
-    private int i = 30;
+    private int i = 60;
     private LoadingFragment fragment;
     private static RSAEncryptor rsaEncryptor;
     @Override
@@ -146,7 +146,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             @Override
             public void requestError(VolleyError error) {
                 fragment.dismiss();
-                ToastU.showShort(RegisterActivity.this,error.toString());
+                //ToastU.showShort(RegisterActivity.this,error.toString());
+                LogU.i(TAG,error.getMessage());
             }
         });
     }

@@ -102,7 +102,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void requestError(VolleyError error) {
                 fragment.dismiss();
-                ToastU.showShort(MainActivity.this, error.getMessage());
+               // ToastU.showShort(MainActivity.this, error.getMessage());
+                LogU.i(TAG,error.getMessage());
             }
         });
 
@@ -155,7 +156,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void requestError(VolleyError error) {
                 fragment.dismiss();
-                ToastU.showShort(MainActivity.this, error.getMessage());
+               // ToastU.showShort(MainActivity.this, error.getMessage());
+                LogU.i(TAG,error.getMessage());
             }
         });
     }

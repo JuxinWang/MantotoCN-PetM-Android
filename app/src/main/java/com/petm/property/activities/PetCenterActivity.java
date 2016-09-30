@@ -136,7 +136,8 @@ public class PetCenterActivity extends BaseActivity implements View.OnClickListe
             @Override
             public void requestError(VolleyError error) {
                 fragment.dismiss();
-                ToastU.showShort(PetCenterActivity.this, error.getMessage());
+               // ToastU.showShort(PetCenterActivity.this, error.getMessage());
+                LogU.i(TAG,error.getMessage());
             }
         });
     }
@@ -205,7 +206,8 @@ public class PetCenterActivity extends BaseActivity implements View.OnClickListe
                             @Override
                             public void requestError(VolleyError error) {
                                 fragment.dismiss();
-                                ToastU.showShort(PetCenterActivity.this, error.getMessage());
+                             //   ToastU.showShort(PetCenterActivity.this, error.getMessage());
+                                LogU.i(TAG,error.getMessage());
                             }
                         });
                         dialog.dismiss();

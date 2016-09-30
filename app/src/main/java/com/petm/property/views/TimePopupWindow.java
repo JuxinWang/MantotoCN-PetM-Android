@@ -26,8 +26,8 @@ import com.petm.property.pickview.WheelTime;
  */
 public class TimePopupWindow extends PopupWindow implements OnClickListener {
 	public enum Type {
-		ALL, YEAR_MONTH_DAY, HOURS_MINS, MONTH_DAY_HOUR_MIN
-	}// 四种选择模式，年月日时分，年月日，时分，月日时分
+		ALL, YEAR_MONTH_DAY, HOURS_MINS, MONTH_DAY_HOUR_MIN,MONTH_DAY
+	}// 四种选择模式，年月日时分，年月日，时分，月日时分,月时
 
 	private View rootView; // 总的布局
 	WheelTime wheelTime;
@@ -83,6 +83,17 @@ public class TimePopupWindow extends PopupWindow implements OnClickListener {
 		WheelTime.setSTART_YEAR(START_YEAR);
 		WheelTime.setEND_YEAR(END_YEAR);
 	}
+
+	/**
+	 * 设置可以选择的时间范围
+	 *
+	 * @param START_DAY
+	 * @param END_DAY
+	 */
+//	public void setDayRange(int START_DAY, int END_DAY) {
+//		WheelTime.setSTART_DAY(START_DAY);
+//		WheelTime.setEND_DAY(END_DAY);
+//	}
 
 	/**
 	 * 设置选中时间
